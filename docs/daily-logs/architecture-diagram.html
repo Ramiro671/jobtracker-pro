@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>JobTracker Pro — Clean Architecture</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 24px; }
+  h1 { text-align: center; font-size: 1.4rem; color: #7dd3fc; margin-bottom: 6px; letter-spacing: 1px; }
+  .subtitle { text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 28px; }
+
+  .diagram { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+  .layer {
+    width: 100%; max-width: 700px;
+    border-radius: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    border: 2px solid transparent;
+  }
+  .layer:hover { transform: scale(1.01); filter: brightness(1.1); }
+  .layer.active { border-color: #fff; filter: brightness(1.2); }
+
+  .layer-api      { background: linear-gradient(135deg, #1e3a5f, #1e40af); }
+  .layer-app      { background: linear-gradient(135deg, #1e3d1e, #166534); }
+  .layer-infra    { background: linear-gradient(135deg, #3d1e1e, #7c2d12); }
+  .layer-domain   { background: linear-gradient(135deg, #3d2d0a, #92400e); }
+
+  .layer-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .layer-icon { font-size: 1.4rem; }
+  .layer-name { font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
+  .layer-sub  { font-size: 0.72rem; color: #94a3b8; }
+
+  .layer-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .tag {
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    color: #cbd5e1;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .arrow {
+    display: flex; flex-direction: column; align-items: center;
+    color: #475569; font-size: 0.7rem; padding: 4px 0;
+    user-select: none;
+  }
+  .arrow-line { width: 2px; height: 18px; background: #334155; }
+  .arrow-head { color: #475569; font-size: 1rem; margin-top: -4px; }
+  .arrow-label { font-size: 0.65rem; color: #64748b; margin-top: 2px; }
+
+  /* Detail panel */
+  .detail-panel {
+    width: 100%; max-width: 700px;
+    background: #1e2433;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    display: none;
+  }
+  .detail-panel.visible { display: block; }
+  .detail-title { font-size: 1rem; font-weight: 700; color: #7dd3fc; margin-bottom: 12px; }
+  .detail-section { margin-bottom: 14px; }
+  .detail-section h4 { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .detail-section p { font-size: 0.82rem; color: #cbd5e1; line-height: 1.6; }
+
+  pre {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.72rem;
+    color: #c9d1d9;
+    overflow-x: auto;
+    line-height: 1.5;
+  }
+  .kw { color: #ff7b72; }
+  .type { color: #79c0ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .attr { color: #d2a8ff; }
+
+  /* Rules */
+  .rules { width: 100%; max-width: 700px; margin-top: 20px; }
+  .rules-title { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; text-align: center; }
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rule-card {
+    background: #1e2433;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+  .rule-card .from { color: #7dd3fc; font-weight: 600; }
+  .rule-card .arrow-right { color: #475569; margin: 0 4px; }
+  .rule-card .to { color: #86efac; font-weight: 600; }
+  .rule-card .note { color: #64748b; font-size: 0.68rem; margin-top: 3px; }
+  .rule-card.forbidden .to { color: #f87171; }
+
+  .hint { text-align: center; font-size: 0.72rem; color: #475569; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<h1>🏗️ JobTracker Pro — Clean Architecture</h1>
+<p class="subtitle">Haz clic en cada capa para ver sus responsabilidades y código de ejemplo</p>
+
+<div class="diagram">
+
+  <!-- API -->
+  <div class="layer layer-api" onclick="showDetail('api')">
+    <div class="layer-header">
+      <span class="layer-icon">🌐</span>
+      <div>
+        <div class="layer-name">API Layer — JobTrackerPro.Api</div>
+        <div class="layer-sub">Punto de entrada · Recibe HTTP requests · Configura la app</div>
+      </div>
+    </div>
+    <div class="layer-tags">
+      <span class="tag">Controllers</span>
+      <span class="tag">Middleware</span>
+      <span class="tag">Dependency Injection</span>
+      <span class="tag">Program.cs</span>
+      <span class="tag">Swagger</span>
+      <span class="tag">JWT config</span>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-head">▼</div>
+    <div class="arrow-label">llama a →</div>
+  </div>
+
+  <!-- APPLICATION -->
+  <div class="layer layer-app" onclick="showDetail('app')">
+    <div class="layer-header">
+      <span class="layer-icon">⚙️</span>
+      <div>
+        <div class="layer-name">Application Layer — JobTrackerPro.Application</div>
+        <div class="layer-sub">Orquesta casos de uso · No sabe nada de HTTP ni de DB</div>
+      </div>
+    </div>
+    <div class="layer-tags">
+      <span class="tag">Use Cases</span>
+      <span class="tag">MediatR Handlers</span>
+      <span class="tag">Commands</span>
+      <span class="tag">Queries</span>
+      <span class="tag">DTOs</span>
+      <span class="tag">AutoMapper</span>
+      <span class="tag">FluentValidation</span>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-head">▼</div>
+    <div class="arrow-label">usa interfaces de →</div>
+  </div>
+
+  <!-- DOMAIN -->
+  <div class="layer layer-domain" onclick="showDetail('domain')">
+    <div class="layer-header">
+      <span class="layer-icon">💎</span>
+      <div>
+        <div class="layer-name">Domain Layer — JobTrackerPro.Domain</div>
+        <div class="layer-sub">El núcleo · Cero dependencias externas · Define las reglas de negocio</div>
+      </div>
+    </div>
+    <div class="layer-tags">
+      <span class="tag">Entities</span>
+      <span class="tag">Value Objects</span>
+      <span class="tag">Interfaces</span>
+      <span class="tag">Enums</span>
+      <span class="tag">Domain Events</span>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-line"></div>
+    <div class="arrow-head">▼</div>
+    <div class="arrow-label">implementa interfaces de →</div>
+  </div>
+
+  <!-- INFRASTRUCTURE -->
+  <div class="layer layer-infra" onclick="showDetail('infra')">
+    <div class="layer-header">
+      <span class="layer-icon">🔧</span>
+      <div>
+        <div class="layer-name">Infrastructure Layer — JobTrackerPro.Infrastructure</div>
+        <div class="layer-sub">Implementa los contratos del Domain · Habla con el mundo externo</div>
+      </div>
+    </div>
+    <div class="layer-tags">
+      <span class="tag">EF Core</span>
+      <span class="tag">PostgreSQL</span>
+      <span class="tag">Repositories</span>
+      <span class="tag">JWT Service</span>
+      <span class="tag">Redis Cache</span>
+      <span class="tag">Migrations</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Detail Panel -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-title" id="detail-title"></div>
+  <div id="detail-content"></div>
+</div>
+
+<!-- Dependency Rules -->
+<div class="rules">
+  <div class="rules-title">📏 Reglas de dependencia</div>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <span class="from">Api</span><span class="arrow-right">→</span><span class="to">Application + Infrastructure</span>
+      <div class="note">Llama use cases, registra servicios</div>
+    </div>
+    <div class="rule-card">
+      <span class="from">Application</span><span class="arrow-right">→</span><span class="to">Domain</span>
+      <div class="note">Solo usa entidades e interfaces del domain</div>
+    </div>
+    <div class="rule-card">
+      <span class="from">Infrastructure</span><span class="arrow-right">→</span><span class="to">Domain</span>
+      <div class="note">Implementa las interfaces del domain</div>
+    </div>
+    <div class="rule-card forbidden">
+      <span class="from">Domain</span><span class="arrow-right">→</span><span class="to">❌ Nadie</span>
+      <div class="note">Domain no depende de nada externo. Jamás.</div>
+    </div>
+  </div>
+</div>
+
+<p class="hint">💡 Regla de oro: las dependencias siempre apuntan hacia el Domain</p>
+
+<script>
+const details = {
+  api: {
+    title: '🌐 API Layer — ¿Qué hace?',
+    html: `
+      <div class="detail-section">
+        <h4>Responsabilidad</h4>
+        <p>Es la capa más externa. Recibe HTTP requests del navegador o cliente, los enruta al handler correcto via MediatR, y devuelve la respuesta HTTP. También registra todos los servicios en el contenedor de DI.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — Controller</h4>
+        <pre><span class="attr">[ApiController]</span>
+<span class="attr">[Route("api/[controller]")]</span>
+<span class="kw">public class</span> <span class="type">JobOffersController</span> : <span class="type">ControllerBase</span>
+{
+    <span class="kw">private readonly</span> <span class="type">ISender</span> _sender; <span class="cm">// MediatR</span>
+
+    <span class="cm">// 🔑 DEPENDENCY INJECTION: ISender se inyecta desde afuera</span>
+    <span class="kw">public</span> <span class="type">JobOffersController</span>(<span class="type">ISender</span> sender) => _sender = sender;
+
+    <span class="attr">[HttpGet]</span>
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IActionResult</span>&gt; GetAll()
+    {
+        <span class="cm">// Solo envía el mensaje. No sabe CÓMO se obtienen los datos.</span>
+        <span class="kw">var</span> result = <span class="kw">await</span> _sender.Send(<span class="kw">new</span> <span class="type">GetJobOffersQuery</span>());
+        <span class="kw">return</span> Ok(result);
+    }
+}</pre>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — Middleware</h4>
+        <pre><span class="cm">// Se ejecuta en CADA request antes de llegar al controller</span>
+<span class="kw">public class</span> <span class="type">ExceptionHandlingMiddleware</span>
+{
+    <span class="kw">public async</span> <span class="type">Task</span> InvokeAsync(<span class="type">HttpContext</span> context)
+    {
+        <span class="kw">try</span> { <span class="kw">await</span> _next(context); }
+        <span class="kw">catch</span> (<span class="type">Exception</span> ex)
+        {
+            <span class="cm">// Captura TODOS los errores de la app en un solo lugar</span>
+            context.Response.StatusCode = 500;
+            <span class="kw">await</span> context.Response.WriteAsJsonAsync(<span class="kw">new</span> { error = ex.Message });
+        }
+    }
+}</pre>
+      </div>
+    `
+  },
+  app: {
+    title: '⚙️ Application Layer — ¿Qué hace?',
+    html: `
+      <div class="detail-section">
+        <h4>Responsabilidad</h4>
+        <p>Orquesta los casos de uso. Define QUÉ hace la app (crear un job offer, obtener todos los jobs) pero NO SABE nada de HTTP, ni de bases de datos, ni de Redis. Solo habla con el Domain.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — Command + Handler (MediatR)</h4>
+        <pre><span class="cm">// COMMAND: el "mensaje" que describes la acción</span>
+<span class="kw">public record</span> <span class="type">CreateJobOfferCommand</span>(
+    <span class="type">string</span> Title,
+    <span class="type">string</span> Company,
+    <span class="type">string</span> Url
+) : <span class="type">IRequest</span>&lt;<span class="type">Guid</span>&gt;;
+
+<span class="cm">// HANDLER: quien ejecuta el comando</span>
+<span class="kw">public class</span> <span class="type">CreateJobOfferHandler</span>
+    : <span class="type">IRequestHandler</span>&lt;<span class="type">CreateJobOfferCommand</span>, <span class="type">Guid</span>&gt;
+{
+    <span class="cm">// 🔑 USA LA INTERFAZ, no la implementación concreta</span>
+    <span class="kw">private readonly</span> <span class="type">IJobOfferRepository</span> _repo;
+
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">Guid</span>&gt; Handle(<span class="type">CreateJobOfferCommand</span> cmd, ...)
+    {
+        <span class="kw">var</span> offer = <span class="kw">new</span> <span class="type">JobOffer</span>(cmd.Title, cmd.Company, cmd.Url);
+        <span class="kw">await</span> _repo.AddAsync(offer);
+        <span class="kw">return</span> offer.Id;
+    }
+}</pre>
+      </div>
+      <div class="detail-section">
+        <h4>¿Qué son las dependencias aquí?</h4>
+        <p><strong style="color:#7dd3fc">IJobOfferRepository</strong> es una dependencia de <code>CreateJobOfferHandler</code>. Application necesita guardar datos pero no sabe NI QUIERE SABER si es PostgreSQL, MongoDB o un archivo. Solo pide la interfaz y alguien más (Infrastructure) provee la implementación real.</p>
+      </div>
+    `
+  },
+  domain: {
+    title: '💎 Domain Layer — ¿Qué hace?',
+    html: `
+      <div class="detail-section">
+        <h4>Responsabilidad</h4>
+        <p>Es el corazón de la app. Contiene las reglas de negocio puras. No depende de NADA externo — ni NuGet packages, ni EF Core, ni Redis. Si cambias de ASP.NET a otro framework, el Domain no cambia.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — Entity</h4>
+        <pre><span class="cm">// ENTITY: tiene identidad propia (Id)</span>
+<span class="kw">public class</span> <span class="type">JobOffer</span>
+{
+    <span class="kw">public</span> <span class="type">Guid</span> Id { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">string</span> Title { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="type">JobStatus</span> Status { <span class="kw">get</span>; <span class="kw">private set</span>; }
+
+    <span class="kw">public</span> <span class="type">JobOffer</span>(<span class="type">string</span> title, <span class="type">string</span> company, <span class="type">string</span> url)
+    {
+        Id = <span class="type">Guid</span>.NewGuid();
+        Title = title;
+        Status = <span class="type">JobStatus</span>.Applied; <span class="cm">// regla de negocio: empieza en Applied</span>
+    }
+
+    <span class="cm">// Las reglas de negocio viven aquí</span>
+    <span class="kw">public void</span> MoveToInterview() => Status = <span class="type">JobStatus</span>.Interview;
+}
+
+<span class="cm">// VALUE OBJECT: sin Id, definido por su valor</span>
+<span class="kw">public record</span> <span class="type">Email</span>(<span class="type">string</span> Value)
+{
+    <span class="kw">public</span> <span class="type">Email</span>(<span class="type">string</span> value) : <span class="kw">this</span>(value)
+    {
+        <span class="kw">if</span> (!value.Contains(<span class="str">'@'</span>)) <span class="kw">throw new</span> <span class="type">ArgumentException</span>(<span class="str">"Invalid email"</span>);
+    }
+}
+
+<span class="cm">// INTERFACE: el contrato que Infrastructure debe cumplir</span>
+<span class="kw">public interface</span> <span class="type">IJobOfferRepository</span>
+{
+    <span class="type">Task</span>&lt;<span class="type">IEnumerable</span>&lt;<span class="type">JobOffer</span>&gt;&gt; GetAllAsync();
+    <span class="type">Task</span> AddAsync(<span class="type">JobOffer</span> offer);
+}</pre>
+      </div>
+    `
+  },
+  infra: {
+    title: '🔧 Infrastructure Layer — ¿Qué hace?',
+    html: `
+      <div class="detail-section">
+        <h4>Responsabilidad</h4>
+        <p>Implementa los contratos (interfaces) definidos en Domain. Aquí vive todo el código que habla con el mundo exterior: PostgreSQL via EF Core, Redis, envío de emails, JWT, etc.</p>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — Repository (EF Core)</h4>
+        <pre><span class="cm">// IMPLEMENTA la interfaz del Domain</span>
+<span class="kw">public class</span> <span class="type">JobOfferRepository</span> : <span class="type">IJobOfferRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="type">AppDbContext</span> _db;
+
+    <span class="kw">public async</span> <span class="type">Task</span>&lt;<span class="type">IEnumerable</span>&lt;<span class="type">JobOffer</span>&gt;&gt; GetAllAsync()
+        => <span class="kw">await</span> _db.JobOffers.ToListAsync(); <span class="cm">// EF Core → SQL</span>
+
+    <span class="kw">public async</span> <span class="type">Task</span> AddAsync(<span class="type">JobOffer</span> offer)
+    {
+        _db.JobOffers.Add(offer);
+        <span class="kw">await</span> _db.SaveChangesAsync();
+    }
+}
+
+<span class="cm">// DbContext — EF Core mapea clases C# a tablas SQL</span>
+<span class="kw">public class</span> <span class="type">AppDbContext</span> : <span class="type">DbContext</span>
+{
+    <span class="kw">public</span> <span class="type">DbSet</span>&lt;<span class="type">JobOffer</span>&gt; JobOffers => Set&lt;<span class="type">JobOffer</span>&gt;();
+}</pre>
+      </div>
+      <div class="detail-section">
+        <h4>Código de ejemplo — DI Registration en Program.cs</h4>
+        <pre><span class="cm">// Aquí se conecta la interfaz con la implementación real</span>
+<span class="cm">// Application pide IJobOfferRepository → .NET inyecta JobOfferRepository</span>
+builder.Services.AddScoped&lt;<span class="type">IJobOfferRepository</span>, <span class="type">JobOfferRepository</span>&gt;();
+builder.Services.AddDbContext&lt;<span class="type">AppDbContext</span>&gt;(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString(<span class="str">"Default"</span>)));
+
+<span class="cm">// Redis</span>
+builder.Services.AddStackExchangeRedisCache(opt =>
+    opt.Configuration = builder.Configuration[<span class="str">"Redis:Connection"</span>]);</pre>
+      </div>
+    `
+  }
+};
+
+function showDetail(layer) {
+  const panel = document.getElementById('detail-panel');
+  const title = document.getElementById('detail-title');
+  const content = document.getElementById('detail-content');
+
+  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  title.textContent = details[layer].title;
+  content.innerHTML = details[layer].html;
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+</body>
+</html>
