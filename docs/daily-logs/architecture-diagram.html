@@ -5,14 +5,21 @@
 <title>JobTracker Pro — Clean Architecture</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 24px; }
-  h1 { text-align: center; font-size: 1.4rem; color: #7dd3fc; margin-bottom: 6px; letter-spacing: 1px; }
-  .subtitle { text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 28px; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; height: 100vh; overflow: hidden; padding: 16px; display: flex; flex-direction: column; }
+  h1 { text-align: center; font-size: 1.3rem; color: #7dd3fc; margin-bottom: 4px; letter-spacing: 1px; }
+  .subtitle { text-align: center; font-size: 0.75rem; color: #64748b; margin-bottom: 12px; }
 
-  .diagram { display: flex; flex-direction: column; align-items: center; gap: 0; }
+  /* Three-column layout — no page scroll */
+  .page-layout  { display: flex; flex-direction: column; flex: 1; min-height: 0; max-width: 1200px; width: 100%; margin: 0 auto; }
+  .main-layout  { display: flex; gap: 16px; flex: 1; min-height: 0; align-items: stretch; }
+  .diagram-col  { flex: 0 0 340px; overflow-y: auto; display: flex; flex-direction: column; }
+  .detail-col   { flex: 1; min-width: 0; overflow-y: auto; display: flex; flex-direction: column; }
+  .rules-col    { flex: 0 0 230px; display: flex; flex-direction: column; gap: 0; }
+
+  .diagram { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
 
   .layer {
-    width: 100%; max-width: 700px;
+    width: 100%;
     border-radius: 12px;
     padding: 16px 20px;
     cursor: pointer;
@@ -54,16 +61,25 @@
 
   /* Detail panel */
   .detail-panel {
-    width: 100%; max-width: 700px;
+    width: 100%;
+    flex: 1;
     background: #1e2433;
     border: 1px solid #334155;
     border-radius: 12px;
     padding: 20px;
-    margin-top: 20px;
-    display: none;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.3s, border-color 0.3s;
+    overflow-y: auto;
   }
-  .detail-panel.visible { display: block; }
-  .detail-title { font-size: 1rem; font-weight: 700; color: #7dd3fc; margin-bottom: 12px; }
+  .detail-placeholder { color: #475569; font-size: 0.82rem; text-align: center; padding: 40px 0; }
+  .detail-panel-content { display: none; }
+  .detail-panel-content.visible { display: block; }
+  .detail-panel.panel-api   { background: linear-gradient(135deg, #1e3a5f, #1e40af); border-color: #3b82f6; }
+  .detail-panel.panel-app   { background: linear-gradient(135deg, #1e3d1e, #166534); border-color: #22c55e; }
+  .detail-panel.panel-infra { background: linear-gradient(135deg, #3d1e1e, #7c2d12); border-color: #ef4444; }
+  .detail-panel.panel-domain{ background: linear-gradient(135deg, #3d2d0a, #92400e); border-color: #f59e0b; }
+  .detail-title { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
   .detail-section { margin-bottom: 14px; }
   .detail-section h4 { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
   .detail-section p { font-size: 0.82rem; color: #cbd5e1; line-height: 1.6; }
@@ -85,23 +101,26 @@
   .attr { color: #d2a8ff; }
 
   /* Rules */
-  .rules { width: 100%; max-width: 700px; margin-top: 20px; }
-  .rules-title { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; text-align: center; }
-  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rules { width: 100%; }
+  .rules-title { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; text-align: center; }
+  .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .rule-card {
-    background: #1e2433;
-    border: 1px solid #334155;
     border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 0.75rem;
+    padding: 8px 10px;
+    font-size: 0.68rem;
+    border: 1px solid transparent;
   }
-  .rule-card .from { color: #7dd3fc; font-weight: 600; }
-  .rule-card .arrow-right { color: #475569; margin: 0 4px; }
+  .rule-card.card-api    { background: linear-gradient(135deg, #1e3a5f, #1e40af); border-color: #3b82f6; }
+  .rule-card.card-app    { background: linear-gradient(135deg, #1e3d1e, #166534); border-color: #22c55e; }
+  .rule-card.card-infra  { background: linear-gradient(135deg, #3d1e1e, #7c2d12); border-color: #ef4444; }
+  .rule-card.card-domain { background: linear-gradient(135deg, #3d2d0a, #92400e); border-color: #f59e0b; }
+  .rule-card .from { color: #fff; font-weight: 600; display: block; margin-bottom: 2px; }
+  .rule-card .arrow-right { color: rgba(255,255,255,0.4); margin: 0 2px; }
   .rule-card .to { color: #86efac; font-weight: 600; }
-  .rule-card .note { color: #64748b; font-size: 0.68rem; margin-top: 3px; }
+  .rule-card .note { color: rgba(255,255,255,0.5); font-size: 0.62rem; margin-top: 3px; }
   .rule-card.forbidden .to { color: #f87171; }
 
-  .hint { text-align: center; font-size: 0.72rem; color: #475569; margin-top: 16px; }
+  .hint { text-align: center; font-size: 0.68rem; color: #475569; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -109,6 +128,11 @@
 <h1>🏗️ JobTracker Pro — Clean Architecture</h1>
 <p class="subtitle">Haz clic en cada capa para ver sus responsabilidades y código de ejemplo</p>
 
+<div class="page-layout">
+<div class="main-layout">
+
+<!-- LEFT: diagram -->
+<div class="diagram-col">
 <div class="diagram">
 
   <!-- API -->
@@ -205,38 +229,52 @@
     </div>
   </div>
 
-</div>
+</div><!-- /diagram -->
+</div><!-- /diagram-col -->
 
-<!-- Detail Panel -->
-<div class="detail-panel" id="detail-panel">
-  <div class="detail-title" id="detail-title"></div>
-  <div id="detail-content"></div>
-</div>
-
-<!-- Dependency Rules -->
-<div class="rules">
-  <div class="rules-title">📏 Reglas de dependencia</div>
-  <div class="rule-grid">
-    <div class="rule-card">
-      <span class="from">Api</span><span class="arrow-right">→</span><span class="to">Application + Infrastructure</span>
-      <div class="note">Llama use cases, registra servicios</div>
-    </div>
-    <div class="rule-card">
-      <span class="from">Application</span><span class="arrow-right">→</span><span class="to">Domain</span>
-      <div class="note">Solo usa entidades e interfaces del domain</div>
-    </div>
-    <div class="rule-card">
-      <span class="from">Infrastructure</span><span class="arrow-right">→</span><span class="to">Domain</span>
-      <div class="note">Implementa las interfaces del domain</div>
-    </div>
-    <div class="rule-card forbidden">
-      <span class="from">Domain</span><span class="arrow-right">→</span><span class="to">❌ Nadie</span>
-      <div class="note">Domain no depende de nada externo. Jamás.</div>
+<!-- RIGHT: detail panel -->
+<div class="detail-col">
+  <div class="detail-panel" id="detail-panel">
+    <div id="detail-placeholder" class="detail-placeholder">← Haz clic en una capa para ver sus detalles</div>
+    <div class="detail-panel-content" id="detail-panel-content">
+      <div class="detail-title" id="detail-title"></div>
+      <div id="detail-content"></div>
     </div>
   </div>
-</div>
+</div><!-- /detail-col -->
 
-<p class="hint">💡 Regla de oro: las dependencias siempre apuntan hacia el Domain</p>
+<!-- RIGHT: rules -->
+<div class="rules-col">
+  <div class="rules">
+    <div class="rules-title">📏 Reglas de dependencia</div>
+    <div class="rule-grid">
+      <div class="rule-card card-api">
+        <span class="from">Api</span>
+        <span class="arrow-right">→</span><span class="to">App + Infra</span>
+        <div class="note">Llama use cases, registra servicios</div>
+      </div>
+      <div class="rule-card card-app">
+        <span class="from">Application</span>
+        <span class="arrow-right">→</span><span class="to">Domain</span>
+        <div class="note">Solo usa entidades e interfaces del domain</div>
+      </div>
+      <div class="rule-card card-infra">
+        <span class="from">Infrastructure</span>
+        <span class="arrow-right">→</span><span class="to">Domain</span>
+        <div class="note">Implementa las interfaces del domain</div>
+      </div>
+      <div class="rule-card card-domain forbidden">
+        <span class="from">Domain</span>
+        <span class="arrow-right">→</span><span class="to">❌ Nadie</span>
+        <div class="note">Domain no depende de nada externo. Jamás.</div>
+      </div>
+    </div>
+  </div>
+  <p class="hint">💡 Las dependencias siempre apuntan hacia el Domain</p>
+</div><!-- /rules-col -->
+
+</div><!-- /main-layout -->
+</div><!-- /page-layout -->
 
 <script>
 const details = {
@@ -415,17 +453,23 @@ builder.Services.AddStackExchangeRedisCache(opt =>
 };
 
 function showDetail(layer) {
-  const panel = document.getElementById('detail-panel');
-  const title = document.getElementById('detail-title');
-  const content = document.getElementById('detail-content');
+  const panel       = document.getElementById('detail-panel');
+  const placeholder = document.getElementById('detail-placeholder');
+  const panelContent= document.getElementById('detail-panel-content');
+  const title       = document.getElementById('detail-title');
+  const content     = document.getElementById('detail-content');
 
   document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
   event.currentTarget.classList.add('active');
 
+  panel.classList.remove('panel-api', 'panel-app', 'panel-domain', 'panel-infra');
+  panel.classList.add('panel-' + layer);
+
+  placeholder.style.display = 'none';
+  panelContent.classList.add('visible');
+
   title.textContent = details[layer].title;
   content.innerHTML = details[layer].html;
-  panel.classList.add('visible');
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 </script>
 </body>
