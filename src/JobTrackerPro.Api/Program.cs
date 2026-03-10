@@ -1,3 +1,4 @@
+using JobTrackerPro.Api.Middleware;
 using JobTrackerPro.Application.Common;
 using JobTrackerPro.Infrastructure;
 
@@ -25,6 +26,8 @@ builder.Services.AddSwaggerGen(c =>
 
 // ── App pipeline ──────────────────────────────────────────
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
