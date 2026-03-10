@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobTrackerPro.Infrastructure.Persistence.Repositories;
 
+/// <summary>EF Core implementation of IRefreshTokenRepository.</summary>
 public class RefreshTokenRepository : IRefreshTokenRepository
 {
     private readonly ApplicationDbContext _context;

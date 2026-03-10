@@ -1,5 +1,5 @@
 using JobTrackerPro.Application.Auth.DTOs;
-using JobTrackerPro.Application.Authentication;
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Entities;
 using JobTrackerPro.Domain.Interfaces;
 using MediatR;

@@ -1,5 +1,5 @@
 using System.Text;
-using JobTrackerPro.Application.Authentication;
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Interfaces;
 using JobTrackerPro.Infrastructure.Authentication;
 using JobTrackerPro.Infrastructure.Persistence;

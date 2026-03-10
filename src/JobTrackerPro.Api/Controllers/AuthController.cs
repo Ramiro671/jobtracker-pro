@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace JobTrackerPro.Api.Controllers;
 
+/// <summary>Handles user authentication — register, login, and token refresh.</summary>
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase

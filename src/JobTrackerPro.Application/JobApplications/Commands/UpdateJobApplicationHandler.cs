@@ -3,6 +3,7 @@ using MediatR;
 
 namespace JobTrackerPro.Application.JobApplications.Commands;
 
+/// <summary>Handles updating the status and notes of an existing job application.</summary>
 public class UpdateJobApplicationHandler
     : IRequestHandler<UpdateJobApplicationCommand, bool>
 {

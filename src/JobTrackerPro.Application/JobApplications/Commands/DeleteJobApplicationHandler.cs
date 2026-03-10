@@ -3,6 +3,7 @@ using MediatR;
 
 namespace JobTrackerPro.Application.JobApplications.Commands;
 
+/// <summary>Handles deletion of a job application by its identifier.</summary>
 public class DeleteJobApplicationHandler
     : IRequestHandler<DeleteJobApplicationCommand, bool>
 {

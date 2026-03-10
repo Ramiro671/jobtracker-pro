@@ -1,11 +1,12 @@
 using JobTrackerPro.Application.Auth.DTOs;
-using JobTrackerPro.Application.Authentication;
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Entities;
 using JobTrackerPro.Domain.Interfaces;
 using MediatR;
 
 namespace JobTrackerPro.Application.Auth.Commands;
 
+/// <summary>Handles refresh token rotation and returns a new access token.</summary>
 public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, AuthResponse>
 {
     private readonly IRefreshTokenRepository _refreshTokenRepository;

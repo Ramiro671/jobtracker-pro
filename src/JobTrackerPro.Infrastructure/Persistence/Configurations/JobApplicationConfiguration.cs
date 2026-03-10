@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JobTrackerPro.Infrastructure.Persistence.Configurations;
 
+/// <summary>EF Core fluent configuration for the JobApplication entity.</summary>
 public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplication>
 {
     public void Configure(EntityTypeBuilder<JobApplication> builder)
