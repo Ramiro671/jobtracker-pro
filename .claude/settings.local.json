@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dotnet build --no-restore -v q)"
+      "Bash(dotnet build --no-restore -v q)",
+      "Bash(dotnet add src/JobTrackerPro.Infrastructure package Microsoft.AspNetCore.Authentication.JwtBearer)",
+      "Bash(dotnet add src/JobTrackerPro.Infrastructure package BCrypt.Net-Next)",
+      "Bash(dotnet add src/JobTrackerPro.Api package Microsoft.AspNetCore.Authentication.JwtBearer)",
+      "Bash(dotnet add src/JobTrackerPro.Application package BCrypt.Net-Next)",
+      "Bash(dotnet build -v q)"
     ]
   }
 }
