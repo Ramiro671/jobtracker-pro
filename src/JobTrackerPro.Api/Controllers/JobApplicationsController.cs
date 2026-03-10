@@ -2,8 +2,10 @@ using JobTrackerPro.Application.DTOs;
 using JobTrackerPro.Application.JobApplications.Commands;
 using JobTrackerPro.Application.JobApplications.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using JobTrackerPro.Domain.Enums;
+
 namespace JobTrackerPro.Api.Controllers;
 
 /// <summary>
@@ -11,6 +13,7 @@ namespace JobTrackerPro.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class JobApplicationsController : ControllerBase
 {
     private readonly ISender _sender;

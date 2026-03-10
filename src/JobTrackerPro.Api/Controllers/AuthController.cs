@@ -21,8 +21,8 @@ public class AuthController : ControllerBase
         [FromBody] RegisterCommand command,
         CancellationToken cancellationToken)
     {
-        var token = await _sender.Send(command, cancellationToken);
-        return Ok(new { token });
+        var response = await _sender.Send(command, cancellationToken);
+        return Ok(response);
     }
 
     /// <summary>Authenticates a user and returns a JWT token.</summary>
@@ -31,7 +31,17 @@ public class AuthController : ControllerBase
         [FromBody] LoginCommand command,
         CancellationToken cancellationToken)
     {
-        var token = await _sender.Send(command, cancellationToken);
-        return Ok(new { token });
+        var response = await _sender.Send(command, cancellationToken);
+        return Ok(response);
+    }
+
+    /// <summary>Refreshes an expired access token using a valid refresh token.</summary>
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(
+        [FromBody] RefreshTokenCommand command,
+        CancellationToken cancellationToken)
+    {
+        var response = await _sender.Send(command, cancellationToken);
+        return Ok(response);
     }
 }

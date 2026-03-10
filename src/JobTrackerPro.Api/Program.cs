@@ -19,6 +19,26 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "Track your job applications — built with Clean Architecture"
     });
+
+    // Bearer token support in Swagger UI
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.ParameterLocation.Header,
+        Description = "Enter your JWT token. Example: eyJhbGci..."
+    });
+
+    c.AddSecurityRequirement(doc => new Microsoft.OpenApi.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", doc),
+            new List<string>()
+        }
+    });
+
     // Include XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

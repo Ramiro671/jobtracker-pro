@@ -1,3 +1,4 @@
+using JobTrackerPro.Application.Auth.DTOs;
 using MediatR;
 
 namespace JobTrackerPro.Application.Auth.Commands;
@@ -7,4 +8,4 @@ public record RegisterCommand(
     string FullName,
     string Email,
     string Password
-) : IRequest<string>;
+) : IRequest<AuthResponse>;

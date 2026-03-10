@@ -32,6 +32,11 @@ public class ExceptionHandlingMiddleware
             _logger.LogWarning("Validation failed: {Errors}", ex.Errors);
             await HandleValidationExceptionAsync(context, ex);
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning("Unauthorized access: {Message}", ex.Message);
+            await HandleUnauthorizedExceptionAsync(context, ex);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unhandled exception occurred.");
@@ -58,6 +63,25 @@ public class ExceptionHandlingMiddleware
             Status = StatusCodes.Status400BadRequest,
             Title = "Validation failed",
             Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1"
+        };
+
+        await context.Response.WriteAsync(
+            JsonSerializer.Serialize(problem));
+    }
+
+    private static async Task HandleUnauthorizedExceptionAsync(
+        HttpContext context,
+        UnauthorizedAccessException ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        context.Response.ContentType = "application/problem+json";
+
+        var problem = new ProblemDetails
+        {
+            Status = StatusCodes.Status401Unauthorized,
+            Title = "Unauthorized",
+            Detail = ex.Message,
+            Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2"
         };
 
         await context.Response.WriteAsync(

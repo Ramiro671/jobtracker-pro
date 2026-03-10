@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<JobApplication> JobApplications => Set<JobApplication>();
     public DbSet<Company> Companies => Set<Company>();
     public DbSet<User> Users => Set<User>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
