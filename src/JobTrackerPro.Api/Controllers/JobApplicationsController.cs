@@ -1,8 +1,9 @@
+using JobTrackerPro.Application.DTOs;
 using JobTrackerPro.Application.JobApplications.Commands;
 using JobTrackerPro.Application.JobApplications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
+using JobTrackerPro.Domain.Enums;
 namespace JobTrackerPro.Api.Controllers;
 
 /// <summary>
@@ -36,4 +37,31 @@ public class JobApplicationsController : ControllerBase
         var id = await _sender.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetAll), new { userId = command.UserId }, new { id });
     }
+
+    /// <summary>Updates the status of a job application.</summary>
+[HttpPut("{id:guid}")]
+public async Task<IActionResult> UpdateStatus(
+    Guid id,
+    [FromBody] UpdateStatusRequest request,
+    CancellationToken cancellationToken)
+{
+    var result = await _sender.Send(
+        new UpdateJobApplicationCommand(id, request.NewStatus, request.Notes),
+        cancellationToken);
+
+    return result ? NoContent() : NotFound();
+}
+
+/// <summary>Deletes a job application.</summary>
+[HttpDelete("{id:guid}")]
+public async Task<IActionResult> Delete(
+    Guid id,
+    CancellationToken cancellationToken)
+{
+    var result = await _sender.Send(
+        new DeleteJobApplicationCommand(id),
+        cancellationToken);
+
+    return result ? NoContent() : NotFound();
+}
 }

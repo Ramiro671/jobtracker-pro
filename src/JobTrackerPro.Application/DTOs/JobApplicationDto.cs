@@ -16,4 +16,5 @@ public record JobApplicationDto(
     string? Notes,
     DateTime CreatedAt,
     DateTime? AppliedAt
+    
 );

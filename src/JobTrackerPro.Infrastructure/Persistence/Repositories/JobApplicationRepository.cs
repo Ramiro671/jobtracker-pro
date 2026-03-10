@@ -49,4 +49,7 @@ public class JobApplicationRepository : IJobApplicationRepository
         if (application is not null)
             _context.JobApplications.Remove(application);
     }
+
+    public void Delete(JobApplication application)
+    => _context.JobApplications.Remove(application);
 }

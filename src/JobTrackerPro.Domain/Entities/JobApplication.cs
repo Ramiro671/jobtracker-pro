@@ -10,6 +10,14 @@ namespace JobTrackerPro.Domain.Entities
     /// </summary>
     public class JobApplication
     {
+        /// <summary>Updates the application status and optional notes.</summary>
+public void UpdateStatus(ApplicationStatus newStatus, string? notes)
+{
+    Status = newStatus;
+    if (notes is not null)
+        Notes = notes;
+    UpdatedAt = DateTime.UtcNow;
+}
         public Guid Id { get; private set; }
 
         // ── Core fields (from Bronze layer: Url, RawText) ──

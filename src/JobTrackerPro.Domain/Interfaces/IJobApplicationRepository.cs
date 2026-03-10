@@ -15,5 +15,7 @@ namespace JobTrackerPro.Domain.Interfaces
         Task AddAsync(JobApplication application, CancellationToken cancellationToken = default);
         Task UpdateAsync(JobApplication application, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+
+        void Delete(JobApplication application);
     }
 }

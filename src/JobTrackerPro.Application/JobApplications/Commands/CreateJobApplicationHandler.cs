@@ -9,18 +9,20 @@ public class CreateJobApplicationHandler : IRequestHandler<CreateJobApplicationC
 {
     private readonly IJobApplicationRepository _jobApplicationRepository;
     private readonly ICompanyRepository _companyRepository;
+    private readonly IUnitOfWork _unitOfWork; // ← AGREGAR
 
     public CreateJobApplicationHandler(
         IJobApplicationRepository jobApplicationRepository,
-        ICompanyRepository companyRepository)
+        ICompanyRepository companyRepository,
+        IUnitOfWork unitOfWork) // ← AGREGAR
     {
         _jobApplicationRepository = jobApplicationRepository;
         _companyRepository = companyRepository;
+        _unitOfWork = unitOfWork; // ← AGREGAR
     }
 
     public async Task<Guid> Handle(CreateJobApplicationCommand command, CancellationToken cancellationToken)
     {
-        // Get or create the company
         var company = await _companyRepository.GetByNameAsync(command.CompanyName, cancellationToken);
         if (company is null)
         {
@@ -28,7 +30,6 @@ public class CreateJobApplicationHandler : IRequestHandler<CreateJobApplicationC
             await _companyRepository.AddAsync(company, cancellationToken);
         }
 
-        // Create the job application
         var application = JobApplication.Create(
             userId: command.UserId,
             title: command.Title,
@@ -38,6 +39,8 @@ public class CreateJobApplicationHandler : IRequestHandler<CreateJobApplicationC
             source: command.Source);
 
         await _jobApplicationRepository.AddAsync(application, cancellationToken);
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken); // ← LA LÍNEA QUE FALTABA
 
         return application.Id;
     }
