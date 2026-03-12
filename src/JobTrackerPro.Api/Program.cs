@@ -39,6 +39,11 @@ try
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
 
+    builder.Services.AddApplicationInsightsTelemetry(options =>
+    {
+        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+    });
+
     builder.Services.AddAuthorization();
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
