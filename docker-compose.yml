@@ -1,5 +1,6 @@
 services:
-  db:
+
+  postgres:
     image: postgres:16-alpine
     container_name: jobtracker_db
     environment:
@@ -9,7 +10,44 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - jobtracker_pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: jobtracker_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jobtracker_api
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=jobtracker_dev;Username=postgres;Password=postgres"
+      ConnectionStrings__Redis: "redis:6379"
+      JwtSettings__Secret: "super-secret-key-for-development-only-change-in-production"
+      JwtSettings__Issuer: "JobTrackerPro"
+      JwtSettings__Audience: "JobTrackerPro"
+      JwtSettings__ExpirationMinutes: "60"
+      ASPNETCORE_ENVIRONMENT: "Development"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
-  jobtracker_pgdata:
+  postgres_data:

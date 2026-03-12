@@ -1,0 +1,11 @@
+**/.git
+**/.gitignore
+**/README.md
+**/*.md
+**/bin
+**/obj
+**/logs
+**/.vs
+**/node_modules
+tests/
+docs/

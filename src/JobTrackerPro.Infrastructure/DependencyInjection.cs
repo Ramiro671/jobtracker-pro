@@ -2,6 +2,7 @@ using System.Text;
 using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Interfaces;
 using JobTrackerPro.Infrastructure.Authentication;
+using JobTrackerPro.Infrastructure.Caching;
 using JobTrackerPro.Infrastructure.Persistence;
 using JobTrackerPro.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +60,16 @@ public static class DependencyInjection
                         Encoding.UTF8.GetBytes(jwtSettings.Secret))
                 };
             });
+
+        // Redis
+        var redisConnection = configuration.GetConnectionString("Redis") ?? "localhost:6379";
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnection;
+            options.InstanceName = "JobTrackerPro:";
+        });
+
+        services.AddScoped<ICacheService, RedisCacheService>();
 
         return services;
     }

@@ -1,3 +1,4 @@
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Entities;
 using JobTrackerPro.Domain.Interfaces;
 using MediatR;
@@ -12,17 +13,20 @@ public class CreateJobApplicationHandler : IRequestHandler<CreateJobApplicationC
     private readonly ICompanyRepository _companyRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateJobApplicationHandler> _logger;
+    private readonly ICacheService _cache;
 
     public CreateJobApplicationHandler(
         IJobApplicationRepository jobApplicationRepository,
         ICompanyRepository companyRepository,
         IUnitOfWork unitOfWork,
-        ILogger<CreateJobApplicationHandler> logger)
+        ILogger<CreateJobApplicationHandler> logger,
+        ICacheService cache)
     {
         _jobApplicationRepository = jobApplicationRepository;
         _companyRepository = companyRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _cache = cache;
     }
 
     public async Task<Guid> Handle(CreateJobApplicationCommand command, CancellationToken cancellationToken)
@@ -52,6 +56,9 @@ public class CreateJobApplicationHandler : IRequestHandler<CreateJobApplicationC
 
         _logger.LogInformation(
             "Job application {ApplicationId} created successfully", application.Id);
+
+        // Invalidate cache for this user
+        await _cache.RemoveAsync($"job-applications:{command.UserId}", cancellationToken);
 
         return application.Id;
     }

@@ -1,4 +1,5 @@
 using FluentAssertions;
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Application.JobApplications.Queries;
 using JobTrackerPro.Domain.Entities;
 using JobTrackerPro.Domain.Interfaces;
@@ -9,12 +10,18 @@ namespace JobTrackerPro.UnitTests.JobApplications;
 public class GetJobApplicationsHandlerTests
 {
     private readonly Mock<IJobApplicationRepository> _repositoryMock;
+    private readonly Mock<ICacheService> _cacheMock;
     private readonly GetJobApplicationsHandler _handler;
 
     public GetJobApplicationsHandlerTests()
     {
         _repositoryMock = new Mock<IJobApplicationRepository>();
-        _handler = new GetJobApplicationsHandler(_repositoryMock.Object);
+        _cacheMock = new Mock<ICacheService>();
+        _cacheMock
+            .Setup(c => c.GetAsync<List<JobTrackerPro.Application.DTOs.JobApplicationDto>>(
+                It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<JobTrackerPro.Application.DTOs.JobApplicationDto>?)null);
+        _handler = new GetJobApplicationsHandler(_repositoryMock.Object, _cacheMock.Object);
     }
 
     [Fact]

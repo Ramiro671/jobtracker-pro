@@ -1,3 +1,4 @@
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Application.DTOs;
 using JobTrackerPro.Domain.Interfaces;
 using MediatR;
@@ -8,19 +9,31 @@ namespace JobTrackerPro.Application.JobApplications.Queries;
 public class GetJobApplicationsHandler : IRequestHandler<GetJobApplicationsQuery, IReadOnlyList<JobApplicationDto>>
 {
     private readonly IJobApplicationRepository _repository;
+    private readonly ICacheService _cache;
 
-    public GetJobApplicationsHandler(IJobApplicationRepository repository)
+    public GetJobApplicationsHandler(
+        IJobApplicationRepository repository,
+        ICacheService cache)
     {
         _repository = repository;
+        _cache = cache;
     }
 
     public async Task<IReadOnlyList<JobApplicationDto>> Handle(
         GetJobApplicationsQuery query,
         CancellationToken cancellationToken)
     {
+        var cacheKey = $"job-applications:{query.UserId}";
+
+        // Try cache first
+        var cached = await _cache.GetAsync<List<JobApplicationDto>>(cacheKey, cancellationToken);
+        if (cached is not null)
+            return cached;
+
+        // Cache miss — query DB
         var applications = await _repository.GetAllByUserIdAsync(query.UserId, cancellationToken);
 
-        return applications.Select(a => new JobApplicationDto(
+        var dtos = applications.Select(a => new JobApplicationDto(
             Id: a.Id,
             Title: a.Title,
             CompanyName: a.Company?.Name ?? string.Empty,
@@ -36,5 +49,10 @@ public class GetJobApplicationsHandler : IRequestHandler<GetJobApplicationsQuery
             CreatedAt: a.CreatedAt,
             AppliedAt: a.AppliedAt
         )).ToList();
+
+        // Store in cache for 10 minutes
+        await _cache.SetAsync(cacheKey, dtos, TimeSpan.FromMinutes(10), cancellationToken);
+
+        return dtos;
     }
 }

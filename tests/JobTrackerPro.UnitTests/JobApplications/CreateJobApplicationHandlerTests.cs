@@ -1,4 +1,5 @@
 using FluentAssertions;
+using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Application.JobApplications.Commands;
 using JobTrackerPro.Domain.Entities;
 using JobTrackerPro.Domain.Interfaces;
@@ -12,6 +13,7 @@ public class CreateJobApplicationHandlerTests
     private readonly Mock<IJobApplicationRepository> _jobApplicationRepositoryMock;
     private readonly Mock<ICompanyRepository> _companyRepositoryMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<ICacheService> _cacheMock;
     private readonly CreateJobApplicationHandler _handler;
 
     public CreateJobApplicationHandlerTests()
@@ -19,12 +21,14 @@ public class CreateJobApplicationHandlerTests
         _jobApplicationRepositoryMock = new Mock<IJobApplicationRepository>();
         _companyRepositoryMock = new Mock<ICompanyRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
+        _cacheMock = new Mock<ICacheService>();
 
         _handler = new CreateJobApplicationHandler(
             _jobApplicationRepositoryMock.Object,
             _companyRepositoryMock.Object,
             _unitOfWorkMock.Object,
-            NullLogger<CreateJobApplicationHandler>.Instance);
+            NullLogger<CreateJobApplicationHandler>.Instance,
+            _cacheMock.Object);
     }
 
     [Fact]
