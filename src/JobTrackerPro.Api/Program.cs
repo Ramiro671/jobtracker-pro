@@ -26,6 +26,15 @@ try
                 rollingInterval: RollingInterval.Day,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}"));
 
+    // ── CORS ──────────────────────────────────────────────────
+    builder.Services.AddCors(options =>
+        options.AddPolicy("Frontend", policy =>
+            policy.WithOrigins(
+                    "http://localhost:5173",
+                    "http://localhost:5174")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()));
+
     // ── Services ──────────────────────────────────────────────
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
@@ -77,6 +86,7 @@ try
             "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
     });
 
+    app.UseCors("Frontend");
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     if (app.Environment.IsDevelopment())
