@@ -39,10 +39,14 @@ try
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
 
-    builder.Services.AddApplicationInsightsTelemetry(options =>
+    var aiConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
+    if (!string.IsNullOrEmpty(aiConnectionString))
     {
-        options.ConnectionString = builder.Configuration["ApplicationInsights:ConnectionString"];
-    });
+        builder.Services.AddApplicationInsightsTelemetry(options =>
+        {
+            options.ConnectionString = aiConnectionString;
+        });
+    }
 
     builder.Services.AddAuthorization();
     builder.Services.AddControllers();
