@@ -37,7 +37,7 @@ public class GetJobApplicationsHandler : IRequestHandler<GetJobApplicationsQuery
             Id: a.Id,
             Title: a.Title,
             CompanyName: a.Company?.Name ?? string.Empty,
-            Status: a.Status.ToString(),
+            Status: (int)a.Status,
             WorkModality: a.WorkModality.ToString(),
             SeniorityLevel: a.SeniorityLevel.ToString(),
             JobUrl: a.JobUrl,

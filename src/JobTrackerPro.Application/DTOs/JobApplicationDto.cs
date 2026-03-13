@@ -5,7 +5,7 @@ public record JobApplicationDto(
     Guid Id,
     string Title,
     string CompanyName,
-    string Status,
+    int Status,
     string WorkModality,
     string SeniorityLevel,
     string? JobUrl,
