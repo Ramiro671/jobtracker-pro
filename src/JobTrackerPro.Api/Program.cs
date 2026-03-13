@@ -31,7 +31,8 @@ try
         options.AddPolicy("Frontend", policy =>
             policy.WithOrigins(
                     "http://localhost:5173",
-                    "http://localhost:5174")
+                    "http://localhost:5174",
+                    "https://gleaming-lollipop-3b4183.netlify.app")
                   .AllowAnyHeader()
                   .AllowAnyMethod()));
 
