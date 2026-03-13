@@ -1,6 +1,7 @@
 using JobTrackerPro.Api.Middleware;
 using JobTrackerPro.Application.Common;
 using JobTrackerPro.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
