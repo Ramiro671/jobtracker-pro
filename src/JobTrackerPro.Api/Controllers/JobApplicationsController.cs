@@ -55,6 +55,17 @@ public async Task<IActionResult> UpdateStatus(
     return result ? NoContent() : NotFound();
 }
 
+/// <summary>Edits title, job URL, and notes of a job application.</summary>
+[HttpPatch("{id:guid}")]
+public async Task<IActionResult> Edit(
+    Guid id,
+    [FromBody] EditJobApplicationCommand command,
+    CancellationToken cancellationToken)
+{
+    var result = await _sender.Send(command with { Id = id }, cancellationToken);
+    return result ? NoContent() : NotFound();
+}
+
 /// <summary>Deletes a job application.</summary>
 [HttpDelete("{id:guid}")]
 public async Task<IActionResult> Delete(

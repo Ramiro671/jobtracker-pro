@@ -10,14 +10,6 @@ namespace JobTrackerPro.Domain.Entities
     /// </summary>
     public class JobApplication
     {
-        /// <summary>Updates the application status and optional notes.</summary>
-public void UpdateStatus(ApplicationStatus newStatus, string? notes)
-{
-    Status = newStatus;
-    if (notes is not null)
-        Notes = notes;
-    UpdatedAt = DateTime.UtcNow;
-}
         public Guid Id { get; private set; }
 
         // ── Core fields (from Bronze layer: Url, RawText) ──
@@ -137,15 +129,31 @@ public void UpdateStatus(ApplicationStatus newStatus, string? notes)
         // ── Behavior methods (Domain logic) ──
 
         /// <summary>
-        /// Advances the application status in the pipeline.
+        /// Advances the application status in the pipeline and optionally updates notes.
+        /// Automatically sets AppliedAt when transitioning to Applied for the first time.
         /// </summary>
-        public void UpdateStatus(ApplicationStatus newStatus)
+        public void UpdateStatus(ApplicationStatus newStatus, string? notes = null)
         {
             Status = newStatus;
+            if (notes is not null)
+                Notes = notes;
             UpdatedAt = DateTime.UtcNow;
 
             if (newStatus == ApplicationStatus.Applied && !AppliedAt.HasValue)
                 AppliedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Updates editable fields: title, job URL, and notes.
+        /// </summary>
+        public void UpdateDetails(string title, string? jobUrl, string? notes)
+        {
+            if (!string.IsNullOrWhiteSpace(title))
+                Title = title.Trim();
+            JobUrl = jobUrl?.Trim();
+            if (notes is not null)
+                Notes = notes;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         /// <summary>

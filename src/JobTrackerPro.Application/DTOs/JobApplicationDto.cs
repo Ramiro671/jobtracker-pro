@@ -15,6 +15,6 @@ public record JobApplicationDto(
     string? SalaryCurrency,
     string? Notes,
     DateTime CreatedAt,
-    DateTime? AppliedAt
-    
+    DateTime? AppliedAt,
+    DateTime? UpdatedAt
 );

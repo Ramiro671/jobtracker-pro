@@ -47,7 +47,8 @@ public class GetJobApplicationsHandler : IRequestHandler<GetJobApplicationsQuery
             SalaryCurrency: a.SalaryCurrency,
             Notes: a.Notes,
             CreatedAt: a.CreatedAt,
-            AppliedAt: a.AppliedAt
+            AppliedAt: a.AppliedAt,
+            UpdatedAt: a.UpdatedAt
         )).ToList();
 
         // Store in cache for 10 minutes

@@ -9,12 +9,14 @@ export interface JobApplication {
   userId: string;
   title: string;
   companyId: string;
+  companyName: string;
   jobUrl?: string;
   description?: string;
   status: ApplicationStatus;
   source: string;
   createdAt: string;
   appliedAt?: string | null;
+  updatedAt?: string | null;
   notes?: string;
 }
 
