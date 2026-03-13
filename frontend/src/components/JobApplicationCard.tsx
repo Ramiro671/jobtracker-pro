@@ -13,7 +13,7 @@ export default function JobApplicationCard({ application, onDelete, onStatusChan
         <div>
           <h3 className="font-semibold text-gray-900 text-base">{application.title}</h3>
           <p className="text-sm text-gray-500 mt-0.5">
-            Applied {new Date(application.appliedAt).toLocaleDateString()}
+            Added {new Date(application.createdAt).toLocaleDateString()}
           </p>
         </div>
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_COLORS[application.status]}`}>
