@@ -90,12 +90,12 @@ try
     // ── App pipeline ──────────────────────────────────────────
     var app = builder.Build();
 
-    // Apply pending EF Core migrations on startup (skip for InMemory/test databases)
-    using (var scope = app.Services.CreateScope())
+    // Apply pending EF Core migrations on startup (skip in Testing environment)
+    if (!app.Environment.IsEnvironment("Testing"))
     {
+        using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<JobTrackerPro.Infrastructure.Persistence.ApplicationDbContext>();
-        if (db.Database.IsRelational())
-            db.Database.Migrate();
+        db.Database.Migrate();
     }
 
     // Serilog request logging — before error middleware
