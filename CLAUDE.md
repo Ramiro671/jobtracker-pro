@@ -29,7 +29,7 @@ src/
 frontend/
   src/
     api/          # Axios calls to the backend
-    components/   # JobApplicationCard, AddApplicationModal, ProtectedRoute
+    components/   # JobApplicationCard, AddApplicationModal, EditApplicationModal, ProtectedRoute
     context/      # AuthContext (JWT stored in localStorage)
     pages/        # LoginPage, RegisterPage, DashboardPage
     types/        # ApplicationStatus enum + STATUS_LABELS, STATUS_COLORS, JobApplication interface
@@ -62,6 +62,22 @@ tests/
 ### JobApplicationDto (Application/DTOs/JobApplicationDto.cs)
 
 `Status` is returned as `int` (not string). This was a deliberate fix — the API originally returned `"Applied"` as a string, which broke the frontend filter that compares `a.status === filter` (number). Always keep `Status` as `int` in the DTO.
+
+`UpdatedAt` is included in the DTO to allow the frontend to compute stale application detection (7+ days no activity).
+
+### API endpoints (JobApplicationsController)
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `GET` | `/api/jobapplications/{userId}` | List all applications for user |
+| `POST` | `/api/jobapplications` | Create new application |
+| `PUT` | `/api/jobapplications/{id}` | Update status + notes |
+| `PATCH` | `/api/jobapplications/{id}` | Edit title, jobUrl, notes |
+| `DELETE` | `/api/jobapplications/{id}` | Delete application |
+
+### Domain: UpdateStatus
+
+`JobApplication.UpdateStatus(ApplicationStatus newStatus, string? notes = null)` — single method with optional notes. Automatically sets `AppliedAt` when transitioning to `Applied` for the first time. Do NOT add a second overload without notes — it was removed to fix a silent bug.
 
 ---
 
@@ -157,8 +173,20 @@ Swagger UI available at `http://localhost:5000` (root prefix is empty).
 
 ---
 
+## Frontend features (DashboardPage)
+
+- **Stats bar** — Total, Active, Offers counts
+- **Stale warning banner** — amber alert for applications in active statuses (Applied, PhoneScreen, Interview, TechnicalTest, FinalInterview) with 7+ days no activity, computed from `updatedAt ?? createdAt`
+- **Search bar** — client-side filter by title or company name
+- **Status filter** — dropdown, filters by `ApplicationStatus` number
+- **Cards** — show title, companyName, date added, status badge, URL link, notes preview, status dropdown, Edit button, Delete button
+
+---
+
 ## Known issues / watch out for
 
 - **Status enum mismatch:** Backend `ApplicationStatus` and frontend `ApplicationStatus` have different names. Backend uses `Applied=1`, frontend uses `Applied=0`. The DTO returns `int` so the frontend values are authoritative for display. Don't change the numeric values on either side without updating both.
 - **appliedAt can be null:** New applications don't have `appliedAt` set. The card shows `createdAt` with "Added" label instead. Do not use `new Date(null)` — it returns Unix epoch.
 - **Integration tests:** Use `UseEnvironment("Testing")` and InMemory EF. The migration guard in Program.cs relies on this. Do not change the environment name.
+- **Redis not in production:** `RedisCacheService` already has graceful fallback (try/catch logs warning and returns `default`). Do not remove the try/catch blocks — they are the fallback mechanism.
+- **PATCH vs PUT:** `PATCH /api/jobapplications/{id}` edits title/jobUrl/notes. `PUT /api/jobapplications/{id}` updates status+notes. Keep them separate — they map to different domain operations.
