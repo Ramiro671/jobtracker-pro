@@ -2,7 +2,9 @@ using System.Text;
 using JobTrackerPro.Application.Common.Interfaces;
 using JobTrackerPro.Domain.Interfaces;
 using JobTrackerPro.Infrastructure.Authentication;
+using JobTrackerPro.Infrastructure.BackgroundServices;
 using JobTrackerPro.Infrastructure.Caching;
+using JobTrackerPro.Infrastructure.Email;
 using JobTrackerPro.Infrastructure.Persistence;
 using JobTrackerPro.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -70,6 +72,14 @@ public static class DependencyInjection
         });
 
         services.AddScoped<ICacheService, RedisCacheService>();
+
+        // Email
+        services.Configure<EmailSettings>(
+            configuration.GetSection("EmailSettings"));
+        services.AddScoped<IEmailService, SmtpEmailService>();
+
+        // Background services
+        services.AddHostedService<StaleNotificationService>();
 
         return services;
     }

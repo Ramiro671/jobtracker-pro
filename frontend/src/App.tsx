@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -8,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 
 export default function App() {
   return (
+    <ThemeProvider>
     <BrowserRouter>
       <ToastProvider>
         <AuthProvider>
@@ -24,5 +26,6 @@ export default function App() {
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }

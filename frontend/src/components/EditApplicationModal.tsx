@@ -32,52 +32,42 @@ export default function EditApplicationModal({ application, onSave, onClose }: P
     }
   };
 
+  const inputCls = 'w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  const labelCls = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Application</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Edit Application</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-            <input
-              type="text"
-              value={form.title}
+            <label className={labelCls}>Job Title</label>
+            <input type="text" value={form.title} required
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-            <input
-              type="text"
-              value={form.companyName}
+            <label className={labelCls}>Company</label>
+            <input type="text" value={form.companyName} required
               onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Job URL</label>
-            <input
-              type="url"
-              value={form.jobUrl}
+            <label className={labelCls}>Job URL</label>
+            <input type="url" value={form.jobUrl}
               onChange={(e) => setForm({ ...form, jobUrl: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              className={inputCls} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-            <textarea
-              value={form.notes}
+            <label className={labelCls}>Notes</label>
+            <textarea value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            />
+              className={`${inputCls} resize-none`} />
           </div>
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
+              className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition">
               Cancel
             </button>
             <button type="submit" disabled={loading}

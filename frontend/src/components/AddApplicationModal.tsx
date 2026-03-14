@@ -31,34 +31,37 @@ export default function AddApplicationModal({ userId, onAdd, onClose }: Props) {
     }
   };
 
+  const inputCls = 'w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500';
+  const labelCls = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
+
   const field = (label: string, key: keyof typeof form, type = 'text', required = false) => (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className={labelCls}>{label}</label>
       <input
         type={type}
         value={form[key]}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
         required={required}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={inputCls}
       />
     </div>
   );
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Add Application</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-md mx-4">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Add Application</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {field('Job Title', 'title', 'text', true)}
           {field('Company', 'companyName', 'text', true)}
           {field('Job URL', 'jobUrl', 'url')}
           {field('Description', 'description')}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
+            <label className={labelCls}>Source</label>
             <select
               value={form.source}
               onChange={(e) => setForm({ ...form, source: e.target.value })}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={inputCls}
             >
               {['LinkedIn', 'Indeed', 'Direct', 'Referral', 'Other'].map(s => (
                 <option key={s}>{s}</option>
@@ -67,7 +70,7 @@ export default function AddApplicationModal({ userId, onAdd, onClose }: Props) {
           </div>
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg text-sm hover:bg-gray-50 transition">
+              className="flex-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition">
               Cancel
             </button>
             <button type="submit" disabled={loading}

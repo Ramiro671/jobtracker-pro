@@ -46,5 +46,12 @@ namespace JobTrackerPro.Domain.Entities
         {
             LastLoginAt = DateTime.UtcNow;
         }
+
+        public void ChangePassword(string newPasswordHash)
+        {
+            if (string.IsNullOrWhiteSpace(newPasswordHash))
+                throw new ArgumentException("Password hash is required.", nameof(newPasswordHash));
+            PasswordHash = newPasswordHash;
+        }
     }
 }
