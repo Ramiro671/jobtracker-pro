@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { type JobApplication, ApplicationStatus, STATUS_LABELS, STATUS_COLORS } from '../types';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
 }
 
 export default function JobApplicationCard({ application, onDelete, onStatusChange, onEdit }: Props) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition">
       <div className="flex justify-between items-start mb-1">
@@ -54,12 +57,30 @@ export default function JobApplicationCard({ application, onDelete, onStatusChan
         >
           Edit
         </button>
-        <button
-          onClick={() => onDelete(application.id)}
-          className="text-xs text-red-500 hover:text-red-700 px-2 py-1.5 rounded-lg hover:bg-red-50 transition"
-        >
-          Delete
-        </button>
+
+        {confirmDelete ? (
+          <>
+            <button
+              onClick={() => onDelete(application.id)}
+              className="text-xs text-white bg-red-600 hover:bg-red-700 px-2 py-1.5 rounded-lg transition"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="text-xs text-red-500 hover:text-red-700 px-2 py-1.5 rounded-lg hover:bg-red-50 transition"
+          >
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );

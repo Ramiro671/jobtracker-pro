@@ -17,7 +17,7 @@ export const jobApplicationsApi = {
   updateStatus: (id: string, newStatus: ApplicationStatus, notes?: string) =>
     apiClient.put(`/api/jobapplications/${id}`, { newStatus, notes }),
 
-  edit: (id: string, data: { title: string; jobUrl?: string; notes?: string }) =>
+  edit: (id: string, data: { title: string; companyName: string; jobUrl?: string; notes?: string }) =>
     apiClient.patch(`/api/jobapplications/${id}`, data),
 
   delete: (id: string) =>

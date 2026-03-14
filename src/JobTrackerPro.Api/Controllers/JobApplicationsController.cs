@@ -4,6 +4,7 @@ using JobTrackerPro.Application.JobApplications.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using JobTrackerPro.Domain.Enums;
 
 namespace JobTrackerPro.Api.Controllers;
@@ -14,6 +15,7 @@ namespace JobTrackerPro.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
+[EnableRateLimiting("api")]
 public class JobApplicationsController : ControllerBase
 {
     private readonly ISender _sender;

@@ -3,13 +3,14 @@ import { type JobApplication } from '../types';
 
 interface Props {
   application: JobApplication;
-  onSave: (id: string, data: { title: string; jobUrl?: string; notes?: string }) => Promise<void>;
+  onSave: (id: string, data: { title: string; companyName: string; jobUrl?: string; notes?: string }) => Promise<void>;
   onClose: () => void;
 }
 
 export default function EditApplicationModal({ application, onSave, onClose }: Props) {
   const [form, setForm] = useState({
     title: application.title,
+    companyName: application.companyName,
     jobUrl: application.jobUrl ?? '',
     notes: application.notes ?? '',
   });
@@ -21,6 +22,7 @@ export default function EditApplicationModal({ application, onSave, onClose }: P
     try {
       await onSave(application.id, {
         title: form.title,
+        companyName: form.companyName,
         jobUrl: form.jobUrl || undefined,
         notes: form.notes || undefined,
       });
@@ -41,6 +43,16 @@ export default function EditApplicationModal({ application, onSave, onClose }: P
               type="text"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <input
+              type="text"
+              value={form.companyName}
+              onChange={(e) => setForm({ ...form, companyName: e.target.value })}
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

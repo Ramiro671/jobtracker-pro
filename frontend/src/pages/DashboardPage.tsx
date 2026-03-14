@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { jobApplicationsApi } from '../api/jobApplications';
 import { type JobApplication, ApplicationStatus, STATUS_LABELS } from '../types';
 import JobApplicationCard from '../components/JobApplicationCard';
@@ -7,6 +8,7 @@ import AddApplicationModal from '../components/AddApplicationModal';
 import EditApplicationModal from '../components/EditApplicationModal';
 
 const STALE_DAYS = 7;
+const PAGE_SIZE = 12;
 const ACTIVE_STATUSES: ApplicationStatus[] = [
   ApplicationStatus.Applied,
   ApplicationStatus.PhoneScreen,
@@ -17,18 +19,22 @@ const ACTIVE_STATUSES: ApplicationStatus[] = [
 
 export default function DashboardPage() {
   const { userId, logout } = useAuth();
+  const { showError, showSuccess } = useToast();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingApp, setEditingApp] = useState<JobApplication | null>(null);
   const [filter, setFilter] = useState<ApplicationStatus | 'all'>('all');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
 
   const fetchApplications = async () => {
     if (!userId) return;
     try {
       const res = await jobApplicationsApi.getAll(userId);
       setApplications(res.data as JobApplication[]);
+    } catch {
+      showError('Failed to load applications. Please refresh.');
     } finally {
       setLoading(false);
     }
@@ -36,26 +42,49 @@ export default function DashboardPage() {
 
   useEffect(() => { fetchApplications(); }, []);
 
+  // Reset to page 1 whenever filters change
+  useEffect(() => { setPage(1); }, [filter, search]);
+
   const handleAdd = async (data: Parameters<typeof jobApplicationsApi.create>[0]) => {
-    await jobApplicationsApi.create(data);
-    await fetchApplications();
+    try {
+      await jobApplicationsApi.create(data);
+      await fetchApplications();
+      showSuccess('Application added.');
+    } catch {
+      showError('Failed to add application. Please try again.');
+      throw new Error('create failed');
+    }
   };
 
-  const handleEdit = async (id: string, data: { title: string; jobUrl?: string; notes?: string }) => {
-    await jobApplicationsApi.edit(id, data);
-    setApplications(prev => prev.map(a =>
-      a.id === id ? { ...a, ...data, updatedAt: new Date().toISOString() } : a
-    ));
+  const handleEdit = async (id: string, data: { title: string; companyName: string; jobUrl?: string; notes?: string }) => {
+    try {
+      await jobApplicationsApi.edit(id, data);
+      setApplications(prev => prev.map(a =>
+        a.id === id ? { ...a, ...data, updatedAt: new Date().toISOString() } : a
+      ));
+      showSuccess('Application updated.');
+    } catch {
+      showError('Failed to save changes. Please try again.');
+      throw new Error('edit failed');
+    }
   };
 
   const handleDelete = async (id: string) => {
-    await jobApplicationsApi.delete(id);
-    setApplications(prev => prev.filter(a => a.id !== id));
+    try {
+      await jobApplicationsApi.delete(id);
+      setApplications(prev => prev.filter(a => a.id !== id));
+    } catch {
+      showError('Failed to delete. Please try again.');
+    }
   };
 
   const handleStatusChange = async (id: string, status: ApplicationStatus) => {
-    await jobApplicationsApi.updateStatus(id, status);
-    setApplications(prev => prev.map(a => a.id === id ? { ...a, status, updatedAt: new Date().toISOString() } : a));
+    try {
+      await jobApplicationsApi.updateStatus(id, status);
+      setApplications(prev => prev.map(a => a.id === id ? { ...a, status, updatedAt: new Date().toISOString() } : a));
+    } catch {
+      showError('Failed to update status. Please try again.');
+    }
   };
 
   const staleApps = applications.filter(a => {
@@ -72,6 +101,9 @@ export default function DashboardPage() {
       const q = search.toLowerCase();
       return a.title.toLowerCase().includes(q) || a.companyName.toLowerCase().includes(q);
     });
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const stats = {
     total: applications.length,
@@ -163,17 +195,41 @@ export default function DashboardPage() {
             {!search && filter === 'all' && <p className="text-sm">Click &ldquo;+ Add Application&rdquo; to get started</p>}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map(app => (
-              <JobApplicationCard
-                key={app.id}
-                application={app}
-                onDelete={handleDelete}
-                onStatusChange={handleStatusChange}
-                onEdit={setEditingApp}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {paginated.map(app => (
+                <JobApplicationCard
+                  key={app.id}
+                  application={app}
+                  onDelete={handleDelete}
+                  onStatusChange={handleStatusChange}
+                  onEdit={setEditingApp}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3 mt-8">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                >
+                  Previous
+                </button>
+                <span className="text-sm text-gray-500">
+                  Page {page} of {totalPages} &middot; {filtered.length} results
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </main>
 

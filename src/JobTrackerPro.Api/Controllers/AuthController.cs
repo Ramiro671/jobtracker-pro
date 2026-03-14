@@ -1,12 +1,14 @@
 using JobTrackerPro.Application.Auth.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace JobTrackerPro.Api.Controllers;
 
 /// <summary>Handles user authentication — register, login, and token refresh.</summary>
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("auth")]
 public class AuthController : ControllerBase
 {
     private readonly ISender _sender;

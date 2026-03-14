@@ -1,6 +1,8 @@
+using System.Threading.RateLimiting;
 using JobTrackerPro.Api.Middleware;
 using JobTrackerPro.Application.Common;
 using JobTrackerPro.Infrastructure;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -36,6 +38,28 @@ try
                     "https://gleaming-lollipop-3b4183.netlify.app")
                   .AllowAnyHeader()
                   .AllowAnyMethod()));
+
+    // ── Rate limiting ─────────────────────────────────────────
+    builder.Services.AddRateLimiter(options =>
+    {
+        // General API: 60 requests/minute per IP
+        options.AddFixedWindowLimiter("api", policy =>
+        {
+            policy.PermitLimit = 60;
+            policy.Window = TimeSpan.FromMinutes(1);
+            policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            policy.QueueLimit = 0;
+        });
+        // Auth endpoints: 10 requests/minute per IP (brute-force protection)
+        options.AddFixedWindowLimiter("auth", policy =>
+        {
+            policy.PermitLimit = 10;
+            policy.Window = TimeSpan.FromMinutes(1);
+            policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            policy.QueueLimit = 0;
+        });
+        options.RejectionStatusCode = 429;
+    });
 
     // ── Services ──────────────────────────────────────────────
     builder.Services.AddApplication();
@@ -106,6 +130,7 @@ try
     });
 
     app.UseCors("Frontend");
+    app.UseRateLimiter();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     app.UseSwagger();

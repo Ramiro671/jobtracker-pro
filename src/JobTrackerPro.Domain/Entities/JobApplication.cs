@@ -157,6 +157,15 @@ namespace JobTrackerPro.Domain.Entities
         }
 
         /// <summary>
+        /// Reassigns the application to a different company.
+        /// </summary>
+        public void UpdateCompany(Guid companyId)
+        {
+            CompanyId = companyId;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
         /// Sets the technology stack for this position.
         /// </summary>
         public void SetTechStack(TechStack techStack)
