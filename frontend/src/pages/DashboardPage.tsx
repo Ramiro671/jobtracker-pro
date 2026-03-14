@@ -7,7 +7,7 @@ import JobApplicationCard from '../components/JobApplicationCard';
 import AddApplicationModal from '../components/AddApplicationModal';
 import EditApplicationModal from '../components/EditApplicationModal';
 
-const STALE_DAYS = 7;
+const STALE_DAYS = 0; // demo: 0 = todas las apps activas aparecen como stale
 const PAGE_SIZE = 12;
 const ACTIVE_STATUSES: ApplicationStatus[] = [
   ApplicationStatus.Applied,
