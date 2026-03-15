@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JobTracker Pro — Guia Visual Tecnica</title>
+<style>
+:root{--bg:#0f172a;--surf:#1e293b;--surf2:#334155;--bord:#475569;--txt:#e2e8f0;--muted:#94a3b8;--blue:#3b82f6;--blue2:#1d4ed8;--purple:#8b5cf6;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--cyan:#06b6d4;--orange:#f97316}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);display:flex;height:100vh;overflow:hidden}
+.sidebar{width:250px;background:var(--surf);border-right:1px solid var(--bord);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+.logo{padding:18px 20px;border-bottom:1px solid var(--bord)}
+.logo h1{font-size:15px;font-weight:700;color:var(--blue)}
+.logo p{font-size:11px;color:var(--muted);margin-top:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;cursor:pointer;border-left:3px solid transparent;transition:all .2s;font-size:13px;color:var(--muted)}
+.nav-item:hover{background:var(--surf2);color:var(--txt)}
+.nav-item.active{border-left-color:var(--blue);background:rgba(59,130,246,.1);color:var(--blue);font-weight:600}
+.nav-num{width:20px;height:20px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.nav-item.active .nav-num{background:var(--blue);color:#fff}
+.nav-footer{margin-top:auto;padding:12px 20px;font-size:10px;color:var(--muted);border-top:1px solid var(--bord)}
+.main{flex:1;overflow-y:auto;padding:32px 40px}
+.section{display:none;max-width:960px;margin:0 auto;animation:fadeIn .3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sec-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+h2{font-size:26px;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{color:var(--muted);font-size:14px;margin-bottom:28px;line-height:1.6}
+h3{font-size:17px;font-weight:600;margin:24px 0 12px;color:var(--txt)}
+h4{font-size:12px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 8px}
+p{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:10px}
+hr{border:none;border-top:1px solid var(--bord);margin:24px 0}
+/* Cards grid */
+.grid{display:grid;gap:14px;margin-bottom:24px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:1fr 1fr 1fr}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:16px}
+.card:hover{border-color:var(--blue);transition:border-color .2s}
+/* Tech cards */
+.tech-card{background:var(--surf);border:1px solid var(--bord);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.tech-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 20px rgba(59,130,246,.2)}
+.tech-icon{font-size:28px;margin-bottom:8px}
+.tech-name{font-weight:700;font-size:13px}
+.tech-type{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.tech-desc{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;display:none}
+.tech-card.expanded .tech-desc{display:block}
+/* Architecture */
+.arch{display:flex;flex-direction:column;gap:3px;margin:20px 0}
+.arch-layer{border-radius:10px;padding:14px 20px;cursor:pointer;transition:all .2s;border-left:4px solid}
+.arch-layer:hover{filter:brightness(1.15)}
+.arch-layer.selected{box-shadow:0 0 0 2px currentColor}
+.al-api{background:rgba(30,58,127,.4);border-color:var(--blue);color:var(--blue)}
+.al-app{background:rgba(76,29,149,.4);border-color:var(--purple);color:var(--purple)}
+.al-infra{background:rgba(20,83,45,.4);border-color:var(--green);color:var(--green)}
+.al-domain{background:rgba(113,63,18,.4);border-color:var(--yellow);color:var(--yellow)}
+.al-name{font-weight:700;font-size:14px}
+.al-role{font-size:11px;opacity:.75;margin-top:2px}
+.al-files{font-size:10px;font-family:monospace;opacity:.55;margin-top:4px}
+.arch-arrow{text-align:center;color:var(--muted);font-size:18px;line-height:1;margin:2px 0}
+.layer-detail{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:16px;margin-top:12px;display:none}
+.layer-detail.show{display:block}
+/* Code */
+.code{background:#0d1117;border:1px solid var(--bord);border-radius:8px;padding:14px 16px;font-family:'Fira Code',Consolas,monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin:10px 0}
+.kw{color:#ff7b72}.ty{color:#79c0ff}.st{color:#a5d6ff}.cm{color:#8b949e}.fn{color:#d2a8ff}.pr{color:#ffa657}.nu{color:#79c0ff}
+/* Flow */
+.flow-wrap{background:var(--surf);border-radius:12px;padding:24px;margin:20px 0}
+.flow-steps{display:flex;flex-direction:column;gap:6px}
+.fstep{display:flex;align-items:flex-start;gap:14px;padding:12px 14px;border-radius:8px;border:1px solid var(--bord);background:var(--bg);transition:all .4s;cursor:default}
+.fstep.lit{border-color:var(--blue);background:rgba(59,130,246,.08);box-shadow:0 0 18px rgba(59,130,246,.15)}
+.fstep.done{border-color:var(--green);opacity:.6}
+.fstep .num{width:26px;height:26px;border-radius:50%;background:var(--surf2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:background .4s}
+.fstep.lit .num{background:var(--blue)}
+.fstep.done .num{background:var(--green)}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;border:1px solid;margin-right:6px;flex-shrink:0}
+.b-fe{color:var(--cyan);border-color:var(--cyan);background:rgba(6,182,212,.1)}
+.b-api{color:var(--blue);border-color:var(--blue);background:rgba(59,130,246,.1)}
+.b-app{color:var(--purple);border-color:var(--purple);background:rgba(139,92,246,.1)}
+.b-dom{color:var(--yellow);border-color:var(--yellow);background:rgba(234,179,8,.1)}
+.b-inf{color:var(--green);border-color:var(--green);background:rgba(34,197,94,.1)}
+.b-db{color:var(--orange);border-color:var(--orange);background:rgba(249,115,22,.1)}
+.step-title{font-size:13px;font-weight:600}
+.step-detail{font-size:11px;color:var(--muted);margin-top:3px}
+.step-code{font-family:monospace;font-size:11px;color:var(--cyan);margin-top:4px}
+.flow-ctrl{display:flex;gap:8px;margin-top:16px;align-items:center}
+.btn{padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:var(--blue2)}
+.btn-s{background:var(--surf2);color:var(--txt)}.btn-s:hover{background:var(--bord)}
+.flow-msg{font-size:12px;color:var(--muted);margin-left:8px}
+/* JWT */
+.jwt-row{display:flex;gap:4px;margin:14px 0;align-items:center}
+.jwt-part{flex:1;text-align:center;padding:12px 8px;border-radius:8px;font-family:monospace;font-size:11px;word-break:break-all;cursor:pointer;transition:all .2s}
+.jwt-h{background:rgba(239,68,68,.15);border:1px solid var(--red);color:var(--red)}
+.jwt-p{background:rgba(234,179,8,.15);border:1px solid var(--yellow);color:var(--yellow)}
+.jwt-s{background:rgba(59,130,246,.15);border:1px solid var(--blue);color:var(--blue)}
+.jwt-dot{color:var(--muted);font-size:20px;font-weight:900;flex-shrink:0}
+.jwt-detail{border:1px solid var(--bord);border-radius:8px;padding:14px;margin-top:10px;font-size:12px;display:none}
+.jwt-detail.show{display:block}
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+th{background:var(--surf2);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+td{padding:9px 12px;border-bottom:1px solid var(--bord)}
+tr:hover td{background:rgba(255,255,255,.02)}
+.m-get{background:rgba(34,197,94,.2);color:#22c55e;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.m-post{background:rgba(59,130,246,.2);color:#3b82f6;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.m-put{background:rgba(234,179,8,.2);color:#eab308;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.m-patch{background:rgba(249,115,22,.2);color:#f97316;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.m-del{background:rgba(239,68,68,.2);color:#ef4444;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+/* Pipeline */
+.pipe{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:20px 0}
+.pstep{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:14px 16px;min-width:130px;text-align:center;flex-shrink:0;transition:all .2s;cursor:pointer}
+.pstep:hover{border-color:var(--blue);transform:translateY(-2px)}
+.pstep .pi{font-size:22px}
+.pstep .pn{font-size:12px;font-weight:700;margin-top:6px}
+.pstep .pd{font-size:10px;color:var(--muted);margin-top:4px}
+.pipe-arr{color:var(--muted);font-size:20px;flex-shrink:0}
+/* Info box */
+.info{border-left:3px solid var(--blue);background:rgba(59,130,246,.05);padding:12px 14px;border-radius:0 8px 8px 0;margin:14px 0;font-size:13px;line-height:1.6}
+.info.warn{border-left-color:var(--yellow);background:rgba(234,179,8,.05)}
+.info.ok{border-left-color:var(--green);background:rgba(34,197,94,.05)}
+.info.err{border-left-color:var(--red);background:rgba(239,68,68,.05)}
+/* Tag */
+.tag{display:inline-block;background:var(--surf2);border:1px solid var(--bord);border-radius:5px;padding:2px 8px;font-size:11px;font-family:monospace;color:var(--cyan);margin:2px}
+/* Nav bar bottom */
+.nav-bar{position:fixed;bottom:0;left:250px;right:0;background:var(--surf);border-top:1px solid var(--bord);padding:12px 40px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted)}
+.nav-dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--surf2);cursor:pointer;transition:background .2s}
+.dot.on{background:var(--blue)}
+/* Progress */
+#prog{height:3px;background:linear-gradient(90deg,var(--blue),var(--purple));position:fixed;top:0;left:0;transition:width .3s;z-index:100}
+/* Status lifecycle */
+.lifecycle{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:16px 0}
+.ls-item{background:var(--surf);border:1px solid var(--bord);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.ls-item:hover{border-color:var(--blue);color:var(--blue)}
+.ls-arrow{color:var(--muted);font-size:14px}
+/* Frontend tree */
+.tree{font-family:monospace;font-size:12px;line-height:1.9;background:#0d1117;border:1px solid var(--bord);border-radius:8px;padding:16px;color:var(--muted)}
+.tree .dir{color:var(--blue)}
+.tree .file{color:var(--txt)}
+.tree .note{color:#8b949e}
+/* Concept pills */
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pill{background:var(--surf);border:1px solid var(--bord);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .2s}
+.pill:hover,.pill.on{background:rgba(59,130,246,.15);border-color:var(--blue);color:var(--blue)}
+.pill-detail{background:var(--surf);border:1px solid var(--bord);border-radius:10px;padding:16px;margin-top:10px;display:none}
+.pill-detail.show{display:block}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bord);border-radius:3px}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<nav class="sidebar">
+  <div class="logo">
+    <h1>JobTracker Pro</h1>
+    <p>Guia Visual Tecnica · 10 modulos</p>
+  </div>
+  <div id="navList"></div>
+  <div class="nav-footer">← → navegar · 1-0 ir a seccion</div>
+</nav>
+
+<main class="main" id="main">
+
+<!-- ═══════════ SECTION 1: STACK ═══════════ -->
+<div class="section active" id="s0">
+  <div class="sec-label">Modulo 1 / 10</div>
+  <h2>El Stack Tecnologico</h2>
+  <p class="subtitle">Todo el proyecto en una sola vista. Haz clic en cada tecnologia para ver su rol especifico en JobTracker Pro.</p>
+
+  <h3>Backend</h3>
+  <div class="grid g4">
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">⚙️</div>
+      <div class="tech-name">.NET 10</div>
+      <div class="tech-type">Runtime / Framework</div>
+      <div class="tech-desc">Framework de Microsoft para construir APIs. Usamos ASP.NET Core para el servidor HTTP. Version 10 = la mas reciente en 2025.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔷</div>
+      <div class="tech-name">C#</div>
+      <div class="tech-type">Lenguaje</div>
+      <div class="tech-desc">Lenguaje tipado, orientado a objetos. Toda la logica del backend esta en C#. Fuertemente tipado = menos bugs en produccion.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🐘</div>
+      <div class="tech-name">PostgreSQL</div>
+      <div class="tech-type">Base de datos</div>
+      <div class="tech-desc">Base de datos relacional (SQL). Alojada en Neon.tech (serverless). Tablas: Users, JobApplications, Companies, RefreshTokens.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔴</div>
+      <div class="tech-name">Redis</div>
+      <div class="tech-type">Cache en memoria</div>
+      <div class="tech-desc">Cache de clave-valor en RAM. Almacena respuestas frecuentes para evitar queries repetitivos a PostgreSQL. Fallback graceful si no esta disponible.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">📦</div>
+      <div class="tech-name">EF Core</div>
+      <div class="tech-type">ORM</div>
+      <div class="tech-desc">Entity Framework Core = ORM (Object-Relational Mapper). Traduce objetos C# a queries SQL. Migrations = versionado del schema de la DB.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">📡</div>
+      <div class="tech-name">MediatR</div>
+      <div class="tech-type">CQRS / Mediator</div>
+      <div class="tech-desc">Implementa el patron Mediator y CQRS. Los Controllers no llaman directamente a servicios; mandan Commands/Queries a handlers via MediatR.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">✅</div>
+      <div class="tech-name">FluentValidation</div>
+      <div class="tech-type">Validacion</div>
+      <div class="tech-desc">Define reglas de validacion en clases separadas (Validators). Se ejecuta automaticamente como pipeline behavior de MediatR antes del handler.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔐</div>
+      <div class="tech-name">JWT</div>
+      <div class="tech-type">Autenticacion</div>
+      <div class="tech-desc">JSON Web Token. Token firmado que el cliente guarda y envia en cada request. El servidor lo verifica sin consultar DB. Expira en 60 min.</div>
+    </div>
+  </div>
+
+  <h3>Frontend</h3>
+  <div class="grid g4">
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">⚛️</div>
+      <div class="tech-name">React 18</div>
+      <div class="tech-type">UI Library</div>
+      <div class="tech-desc">Libreria para construir interfaces. Componentes reutilizables + estado local con useState/useEffect. No es un framework completo.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔵</div>
+      <div class="tech-name">TypeScript</div>
+      <div class="tech-type">Lenguaje</div>
+      <div class="tech-desc">JavaScript con tipos. Detecta errores en compile-time. Interfaces y enums para tipar las respuestas del API. Compila a JavaScript.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">⚡</div>
+      <div class="tech-name">Vite</div>
+      <div class="tech-type">Build Tool</div>
+      <div class="tech-desc">Herramienta de build extremadamente rapida. Reemplaza Webpack. HMR (Hot Module Replacement) instantaneo en desarrollo.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🎨</div>
+      <div class="tech-name">Tailwind v4</div>
+      <div class="tech-type">CSS Framework</div>
+      <div class="tech-desc">CSS utility-first. Clases directamente en el HTML/JSX. v4 usa @tailwindcss/vite plugin (no tailwind.config.js). Dark mode con @variant dark.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🌐</div>
+      <div class="tech-name">Axios</div>
+      <div class="tech-type">HTTP Client</div>
+      <div class="tech-desc">Cliente HTTP para el navegador. Interceptores para agregar JWT a cada request y manejar refresh automatico cuando expira el token.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔀</div>
+      <div class="tech-name">React Router</div>
+      <div class="tech-type">Routing</div>
+      <div class="tech-desc">Manejo de rutas del lado del cliente (SPA). /login, /register, /dashboard. ProtectedRoute redirige a /login si no hay token valido.</div>
+    </div>
+  </div>
+
+  <h3>DevOps &amp; Cloud</h3>
+  <div class="grid g4">
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">☁️</div>
+      <div class="tech-name">Azure</div>
+      <div class="tech-type">Cloud - Backend</div>
+      <div class="tech-desc">Azure App Service aloja la API .NET. Plan F1 (gratis). El backend corre en Central US. Variables de entorno configuradas como App Settings.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🌍</div>
+      <div class="tech-name">Netlify</div>
+      <div class="tech-type">Hosting - Frontend</div>
+      <div class="tech-desc">Hosting estatico para el frontend React. Deploy automatico desde GitHub. netlify.toml en /public/ maneja el redirect de SPA routing.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🔄</div>
+      <div class="tech-name">GitHub Actions</div>
+      <div class="tech-type">CI/CD</div>
+      <div class="tech-desc">Pipeline automatico al hacer push a main: build → tests → docker → deploy API → deploy frontend. 4 jobs en secuencia.</div>
+    </div>
+    <div class="tech-card" onclick="toggle(this)">
+      <div class="tech-icon">🐳</div>
+      <div class="tech-name">Docker</div>
+      <div class="tech-type">Contenedores</div>
+      <div class="tech-desc">En dev: docker compose up levanta PostgreSQL + Redis localmente. En CI: docker build valida que la imagen sea construible.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 2: CLEAN ARCHITECTURE ═══════════ -->
+<div class="section" id="s1">
+  <div class="sec-label">Modulo 2 / 10</div>
+  <h2>Arquitectura Limpia</h2>
+  <p class="subtitle">Clean Architecture organiza el codigo en capas concentricas. La regla de dependencia dice: las capas externas dependen de las internas, NUNCA al reves. Haz clic en cada capa.</p>
+
+  <div class="arch">
+    <div class="arch-layer al-api" onclick="showLayer('api')">
+      <div class="al-name">API Layer — Capa de Presentacion</div>
+      <div class="al-role">Recibe HTTP requests, valida autenticacion, delega a Application</div>
+      <div class="al-files">Controllers/ · Middleware/ · Program.cs · appsettings.json</div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer al-app" onclick="showLayer('app')">
+      <div class="al-name">Application Layer — Logica de Negocio</div>
+      <div class="al-role">Commands, Queries, Handlers, DTOs, Validators, Behaviors</div>
+      <div class="al-files">Commands/ · Queries/ · DTOs/ · Validators/ · Behaviors/ · Interfaces/</div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer al-infra" onclick="showLayer('infra')">
+      <div class="al-name">Infrastructure Layer — Implementaciones Tecnicas</div>
+      <div class="al-role">EF Core, Repositorios, JWT, Redis, Email, Background Services</div>
+      <div class="al-files">Persistence/ · Authentication/ · Caching/ · Email/ · BackgroundServices/</div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer al-domain" onclick="showLayer('domain')">
+      <div class="al-name">Domain Layer — El Nucleo</div>
+      <div class="al-role">Entidades, Enums, Interfaces de dominio. Cero dependencias externas.</div>
+      <div class="al-files">Entities/ · Enums/ · Interfaces/ · ValueObjects/</div>
+    </div>
+  </div>
+
+  <div id="ld-api" class="layer-detail">
+    <h4>API Layer en detalle</h4>
+    <div class="grid g2">
+      <div>
+        <p><strong>JobApplicationsController.cs</strong> — CRUD de aplicaciones. Cada endpoint extrae el userId del JWT y crea un Command/Query para MediatR.</p>
+        <p><strong>AuthController.cs</strong> — Register, Login, Refresh, Logout. Rate limited a 10 req/min.</p>
+        <p><strong>ExceptionHandlingMiddleware.cs</strong> — Captura excepciones no manejadas y las convierte a ProblemDetails (RFC 9110). ValidationException → 400, UnauthorizedAccessException → 401.</p>
+      </div>
+      <div>
+        <div class="code"><span class="cm">// Controller delega a MediatR</span>
+[<span class="ty">HttpPost</span>]
+<span class="kw">public async</span> <span class="ty">Task</span>&lt;<span class="ty">IActionResult</span>&gt; Create(
+    [<span class="ty">FromBody</span>] <span class="ty">CreateJobApplicationRequest</span> req)
+{
+    <span class="kw">var</span> result = <span class="kw">await</span> _sender.<span class="fn">Send</span>(
+        <span class="kw">new</span> <span class="ty">CreateJobApplicationCommand</span>(...)
+    );
+    <span class="kw">return</span> <span class="fn">CreatedAtAction</span>(..., result);
+}</div>
+      </div>
+    </div>
+  </div>
+  <div id="ld-app" class="layer-detail">
+    <h4>Application Layer en detalle</h4>
+    <div class="grid g2">
+      <div>
+        <p><strong>Commands</strong> = operaciones que cambian estado (Create, Update, Delete, ChangePassword). Implementan <code>IRequest&lt;T&gt;</code>.</p>
+        <p><strong>Queries</strong> = operaciones de lectura (GetJobApplications). No mutan estado.</p>
+        <p><strong>Handlers</strong> = logica que ejecuta el Command/Query. Accede a repos via interfaces.</p>
+        <p><strong>Validators</strong> = reglas FluentValidation. Se ejecutan ANTES del handler via pipeline behavior.</p>
+        <p><strong>DTOs</strong> = objetos de transferencia de datos. JobApplicationDto tiene Status como int (no string) para que el frontend pueda comparar numeros.</p>
+      </div>
+      <div>
+        <div class="code"><span class="cm">// Command + Handler CQRS</span>
+<span class="kw">public record</span> <span class="ty">CreateJobApplicationCommand</span>(
+    <span class="ty">Guid</span> UserId, <span class="ty">string</span> Title,
+    <span class="ty">string</span> CompanyName, <span class="ty">string</span>? JobUrl
+) : <span class="ty">IRequest</span>&lt;<span class="ty">JobApplicationDto</span>&gt;;
+
+<span class="kw">public class</span> <span class="ty">CreateJobApplicationHandler</span>
+    : <span class="ty">IRequestHandler</span>&lt;<span class="ty">CreateJobApplicationCommand</span>,
+      <span class="ty">JobApplicationDto</span>&gt;
+{
+    <span class="kw">public async</span> <span class="ty">Task</span>&lt;<span class="ty">JobApplicationDto</span>&gt;
+        <span class="fn">Handle</span>(<span class="ty">CreateJobApplicationCommand</span> req, ...)
+    { <span class="cm">/* logica aqui */</span> }
+}</div>
+      </div>
+    </div>
+  </div>
+  <div id="ld-infra" class="layer-detail">
+    <h4>Infrastructure Layer en detalle</h4>
+    <div class="grid g2">
+      <div>
+        <p><strong>ApplicationDbContext</strong> — DbContext de EF Core. Define DbSets (tablas). Configura relaciones, índices, conversiones.</p>
+        <p><strong>Repositories</strong> — Implementan IJobApplicationRepository, IUserRepository, etc. Solo la infraestructura sabe de EF Core.</p>
+        <p><strong>JwtTokenGenerator</strong> — Genera y firma JWT con clave secreta. El token incluye userId como claim "sub".</p>
+        <p><strong>RedisCacheService</strong> — Implementa ICacheService. Try/catch en cada operacion para no romper el flujo si Redis esta caido.</p>
+      </div>
+      <div>
+        <div class="code"><span class="cm">// EF Core DbContext</span>
+<span class="kw">public class</span> <span class="ty">ApplicationDbContext</span>
+    : <span class="ty">DbContext</span>
+{
+    <span class="kw">public</span> <span class="ty">DbSet</span>&lt;<span class="ty">User</span>&gt; Users =&gt; ...;
+    <span class="kw">public</span> <span class="ty">DbSet</span>&lt;<span class="ty">JobApplication</span>&gt;
+        JobApplications =&gt; ...;
+    <span class="kw">public</span> <span class="ty">DbSet</span>&lt;<span class="ty">Company</span>&gt; Companies =&gt; ...;
+}</div>
+      </div>
+    </div>
+  </div>
+  <div id="ld-domain" class="layer-detail">
+    <h4>Domain Layer en detalle — EL CORAZON</h4>
+    <div class="grid g2">
+      <div>
+        <p><strong>Entidades</strong> = objetos con identidad (Id unico): User, JobApplication, Company, RefreshToken.</p>
+        <p><strong>Metodos de dominio</strong> = la logica vive en la entidad, no en el controlador:</p>
+        <p>— <code>JobApplication.UpdateStatus()</code> — cambia status y registra appliedAt automaticamente.</p>
+        <p>— <code>User.ChangePassword()</code> — reemplaza el hash de contrasena.</p>
+        <p><strong>Sin dependencias externas</strong> = no referencia EF Core, ASP.NET, ni nada externo. Solo .NET base class library.</p>
+      </div>
+      <div>
+        <div class="code"><span class="cm">// Entidad con logica de dominio</span>
+<span class="kw">public class</span> <span class="ty">JobApplication</span>
+{
+    <span class="kw">public</span> <span class="ty">Guid</span> Id { <span class="kw">get private set</span>; }
+    <span class="kw">public</span> <span class="ty">ApplicationStatus</span> Status
+        { <span class="kw">get private set</span>; }
+
+    <span class="kw">public void</span> <span class="fn">UpdateStatus</span>(
+        <span class="ty">ApplicationStatus</span> newStatus,
+        <span class="ty">string</span>? notes = <span class="kw">null</span>)
+    {
+        <span class="kw">if</span> (newStatus == <span class="ty">ApplicationStatus</span>.Applied
+            &amp;&amp; AppliedAt == <span class="kw">null</span>)
+            AppliedAt = <span class="ty">DateTime</span>.UtcNow;
+        Status = newStatus;
+        UpdatedAt = <span class="ty">DateTime</span>.UtcNow;
+    }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="info">
+    <strong>Regla de dependencia:</strong> Domain no conoce a nadie. Application conoce Domain. Infrastructure conoce Domain + Application (implementa sus interfaces). API conoce a todos. Si inviertes esta regla, el proyecto se vuelve imposible de testear.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 3: FULL FLOW ═══════════ -->
+<div class="section" id="s2">
+  <div class="sec-label">Modulo 3 / 10</div>
+  <h2>Flujo Completo de una Peticion</h2>
+  <p class="subtitle">Escenario: el usuario crea una nueva aplicacion de trabajo. Presiona "Reproducir" para ver como viaja cada dato capa por capa.</p>
+
+  <div class="flow-wrap">
+    <div class="flow-steps" id="flowSteps"></div>
+    <div class="flow-ctrl">
+      <button class="btn btn-p" onclick="startFlow()">&#9654; Reproducir</button>
+      <button class="btn btn-s" onclick="resetFlow()">&#8634; Reset</button>
+      <span class="flow-msg" id="flowMsg">Presiona Reproducir para comenzar la animacion</span>
+    </div>
+  </div>
+
+  <hr>
+  <h3>El mismo flujo como diagrama</h3>
+  <div class="code">
+<span class="cm">NAVEGADOR (React)                       SERVIDOR (.NET)</span>
+<span class="cm">──────────────────                      ────────────────────────────────────</span>
+<span class="fn">AddApplicationModal</span>.tsx
+  └─ <span class="fn">handleSubmit</span>()
+      └─ axios.<span class="fn">post</span>(<span class="st">'/api/jobapplications'</span>, dto)
+           │  ← Authorization: Bearer &lt;JWT&gt;
+           │
+           ▼  HTTP POST /api/jobapplications
+<span class="cm">                              JobApplicationsController</span>
+<span class="cm">                                └─ Extrae userId del JWT claim</span>
+<span class="cm">                                └─ _sender.Send(CreateJobApplicationCommand)</span>
+<span class="cm">                                              │</span>
+<span class="cm">                                              ▼ MediatR Pipeline</span>
+<span class="cm">                              ValidationBehavior (FluentValidation)</span>
+<span class="cm">                                └─ Valida Title != empty, UserId != empty</span>
+<span class="cm">                                └─ Si falla: lanza ValidationException → 400</span>
+<span class="cm">                                              │</span>
+<span class="cm">                                              ▼</span>
+<span class="cm">                              CreateJobApplicationHandler</span>
+<span class="cm">                                └─ Busca o crea Company por nombre</span>
+<span class="cm">                                └─ JobApplication.Create(...)</span>
+<span class="cm">                                └─ _repository.AddAsync(app)</span>
+<span class="cm">                                └─ _unitOfWork.SaveChangesAsync()</span>
+<span class="cm">                                └─ return JobApplicationDto</span>
+<span class="cm">                                              │</span>
+<span class="cm">                                              ▼ HTTP 201 Created</span>
+<span class="fn">setApplications</span>([...prev, newApp])
+<span class="fn">showSuccess</span>(<span class="st">'Application added!'</span>)
+<span class="fn">setShowModal</span>(<span class="kw">false</span>)
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 4: AUTH ═══════════ -->
+<div class="section" id="s3">
+  <div class="sec-label">Modulo 4 / 10</div>
+  <h2>Autenticacion con JWT</h2>
+  <p class="subtitle">JSON Web Token es un estandar para transmitir informacion de forma segura. El backend firma el token, el frontend lo guarda y lo envia en cada request.</p>
+
+  <h3>Estructura del JWT</h3>
+  <p>Un JWT tiene 3 partes separadas por puntos. Haz clic en cada parte para ver su contenido:</p>
+  <div class="jwt-row">
+    <div class="jwt-part jwt-h" onclick="showJwt('h')">
+      <div style="font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Header</div>
+      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+    </div>
+    <div class="jwt-dot">.</div>
+    <div class="jwt-part jwt-p" onclick="showJwt('p')">
+      <div style="font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Payload</div>
+      eyJzdWIiOiJ1c2VyLWd1aWQiLCJlbWFpbCI6Ii4uLiJ9
+    </div>
+    <div class="jwt-dot">.</div>
+    <div class="jwt-part jwt-s" onclick="showJwt('s')">
+      <div style="font-size:10px;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Signature</div>
+      SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    </div>
+  </div>
+  <div id="jwt-h" class="jwt-detail">
+    <h4>Header (Encabezado)</h4>
+    <p>Indica el algoritmo de firma y tipo de token. Codificado en Base64URL (no encriptado — solo codificado).</p>
+    <div class="code">{ <span class="pr">"alg"</span>: <span class="st">"HS256"</span>, <span class="pr">"typ"</span>: <span class="st">"JWT"</span> }</div>
+  </div>
+  <div id="jwt-p" class="jwt-detail">
+    <h4>Payload (Carga util)</h4>
+    <p>Contiene los "claims" — datos del usuario. El backend extrae el userId del claim "sub" en cada request autenticado. NO guardes datos sensibles aqui — es solo Base64, no encriptado.</p>
+    <div class="code">{
+  <span class="pr">"sub"</span>: <span class="st">"3fa85f64-5717-4562-b3fc-2c963f66afa6"</span>,  <span class="cm">// userId</span>
+  <span class="pr">"email"</span>: <span class="st">"user@example.com"</span>,
+  <span class="pr">"name"</span>: <span class="st">"John Doe"</span>,
+  <span class="pr">"iss"</span>: <span class="st">"JobTrackerPro"</span>,              <span class="cm">// issuer</span>
+  <span class="pr">"aud"</span>: <span class="st">"JobTrackerPro"</span>,              <span class="cm">// audience</span>
+  <span class="pr">"exp"</span>: <span class="nu">1735689600</span>,                    <span class="cm">// expira en 60 min</span>
+  <span class="pr">"iat"</span>: <span class="nu">1735686000</span>                     <span class="cm">// emitido en</span>
+}</div>
+  </div>
+  <div id="jwt-s" class="jwt-detail">
+    <h4>Signature (Firma)</h4>
+    <p>HMAC-SHA256 del header + payload, firmado con la clave secreta del servidor. Si alguien modifica el payload, la firma no coincide y el token es rechazado.</p>
+    <div class="code">HMACSHA256(
+  base64UrlEncode(header) + <span class="st">"."</span> + base64UrlEncode(payload),
+  secretKey  <span class="cm">// JwtSettings:Secret en appsettings.json</span>
+)</div>
+  </div>
+
+  <hr>
+  <h3>Flujo de Login + Refresh Token</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h4>1. Login</h4>
+      <p>POST /api/auth/login → el backend valida credenciales, genera:</p>
+      <p>— <strong>Access Token</strong> (JWT, expira en 60 min)</p>
+      <p>— <strong>Refresh Token</strong> (GUID, expira en 7 dias, guardado en DB)</p>
+      <p>El frontend guarda ambos en localStorage.</p>
+    </div>
+    <div class="card">
+      <h4>2. Refresh automatico</h4>
+      <p>Cuando el access token expira, el API devuelve 401. El interceptor de Axios:</p>
+      <p>1. Detecta el 401 y llama POST /api/auth/refresh</p>
+      <p>2. Encola todos los requests pendientes</p>
+      <p>3. Cuando llega el nuevo token, reintenta todos</p>
+      <p>4. Si el refresh tambien falla → logout</p>
+    </div>
+  </div>
+  <div class="code"><span class="cm">// client.ts — Interceptor con queue</span>
+<span class="kw">let</span> isRefreshing = <span class="kw">false</span>;
+<span class="kw">let</span> pendingQueue: <span class="ty">Array</span>&lt;{resolve, reject}&gt; = [];
+
+apiClient.interceptors.response.<span class="fn">use</span>(<span class="kw">null</span>, <span class="kw">async</span> (error) =&gt; {
+  <span class="kw">if</span> (error.response?.status === <span class="nu">401</span> &amp;&amp; !config._retry) {
+    <span class="kw">if</span> (isRefreshing) {
+      <span class="kw">return new</span> <span class="ty">Promise</span>((resolve, reject) =&gt;
+        pendingQueue.<span class="fn">push</span>({ resolve, reject })
+      );
+    }
+    isRefreshing = <span class="kw">true</span>;
+    config._retry = <span class="kw">true</span>;
+    <span class="kw">const</span> { accessToken } = <span class="kw">await</span> <span class="fn">refresh</span>();
+    <span class="fn">drainQueue</span>(<span class="kw">null</span>, accessToken);  <span class="cm">// reintenta todos</span>
+    isRefreshing = <span class="kw">false</span>;
+    <span class="kw">return</span> apiClient(config);       <span class="cm">// reintenta el original</span>
+  }
+});</div>
+
+  <hr>
+  <h3>ProtectedRoute — Rutas Privadas</h3>
+  <div class="code"><span class="cm">// ProtectedRoute.tsx</span>
+<span class="kw">const</span> ProtectedRoute = () =&gt; {
+  <span class="kw">const</span> { userId } = <span class="fn">useAuth</span>();
+  <span class="kw">return</span> userId
+    ? &lt;<span class="ty">Outlet</span> /&gt;                          <span class="cm">// renderiza la pagina</span>
+    : &lt;<span class="ty">Navigate</span> to=<span class="st">"/login"</span> replace /&gt;;  <span class="cm">// redirige</span>
+};</div>
+</div>
+
+<!-- ═══════════ SECTION 5: DOMAIN ═══════════ -->
+<div class="section" id="s4">
+  <div class="sec-label">Modulo 5 / 10</div>
+  <h2>Domain Layer</h2>
+  <p class="subtitle">El nucleo del sistema. Contiene las entidades y reglas de negocio puras. No sabe nada de HTTP, ni bases de datos, ni React.</p>
+
+  <h3>Entidades</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h4>User</h4>
+      <div class="tag">Id: Guid</div><div class="tag">FullName: string</div><div class="tag">Email: string</div>
+      <div class="tag">PasswordHash: string</div><div class="tag">CreatedAt: DateTime</div>
+      <p style="margin-top:10px">Metodos: <code>Create()</code>, <code>RecordLogin()</code>, <code>ChangePassword(hash)</code></p>
+    </div>
+    <div class="card">
+      <h4>JobApplication</h4>
+      <div class="tag">Id: Guid</div><div class="tag">UserId: Guid</div><div class="tag">CompanyId: Guid</div>
+      <div class="tag">Title: string</div><div class="tag">Status: ApplicationStatus</div>
+      <div class="tag">AppliedAt: DateTime?</div><div class="tag">UpdatedAt: DateTime?</div>
+      <p style="margin-top:10px">Metodos: <code>Create()</code>, <code>UpdateStatus()</code>, <code>EditDetails()</code></p>
+    </div>
+    <div class="card">
+      <h4>Company</h4>
+      <div class="tag">Id: Guid</div><div class="tag">Name: string</div><div class="tag">Website: string?</div>
+      <div class="tag">Industry: string?</div><div class="tag">Location: string?</div>
+      <p style="margin-top:10px">Metodo: <code>Create(name, website?, ...)</code></p>
+    </div>
+    <div class="card">
+      <h4>RefreshToken</h4>
+      <div class="tag">Token: string (GUID)</div><div class="tag">UserId: Guid</div>
+      <div class="tag">ExpiresAt: DateTime</div><div class="tag">IsRevoked: bool</div>
+      <p style="margin-top:10px">Para el mecanismo de refresh automatico de JWT.</p>
+    </div>
+  </div>
+
+  <h3>ApplicationStatus Enum</h3>
+  <p class="info warn"><strong>Atencion:</strong> El backend y el frontend usan enums DISTINTOS. El backend retorna el int, y el frontend interpreta ese numero con SU enum. No intentar sincronizarlos sin actualizar ambos lados.</p>
+
+  <div class="grid g2">
+    <div>
+      <h4>Backend (C#)</h4>
+      <div class="code"><span class="kw">public enum</span> <span class="ty">ApplicationStatus</span>
+{
+    Saved = <span class="nu">0</span>,          <span class="cm">// recien guardado</span>
+    Applied = <span class="nu">1</span>,        <span class="cm">// aplicacion enviada</span>
+    Screening = <span class="nu">2</span>,      <span class="cm">// revision inicial</span>
+    TechnicalTest = <span class="nu">3</span>,  <span class="cm">// prueba tecnica</span>
+    Interview = <span class="nu">4</span>,      <span class="cm">// entrevista</span>
+    OfferReceived = <span class="nu">5</span>,  <span class="cm">// oferta recibida</span>
+    Accepted = <span class="nu">6</span>,       <span class="cm">// aceptado</span>
+    Rejected = <span class="nu">7</span>,       <span class="cm">// rechazado</span>
+    Withdrawn = <span class="nu">8</span>       <span class="cm">// retirado</span>
+}</div>
+    </div>
+    <div>
+      <h4>Frontend (TypeScript)</h4>
+      <div class="code"><span class="kw">export const</span> ApplicationStatus = {
+  Applied: <span class="nu">0</span>,
+  PhoneScreen: <span class="nu">1</span>,
+  Interview: <span class="nu">2</span>,
+  TechnicalTest: <span class="nu">3</span>,
+  FinalInterview: <span class="nu">4</span>,
+  OfferReceived: <span class="nu">5</span>,
+  OfferAccepted: <span class="nu">6</span>,
+  Rejected: <span class="nu">7</span>,
+  Withdrawn: <span class="nu">8</span>
+} <span class="kw">as const</span>;</div>
+    </div>
+  </div>
+
+  <h3>Ciclo de vida de una aplicacion</h3>
+  <div class="lifecycle">
+    <div class="ls-item" style="border-color:var(--muted)">Saved (0)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#3b82f6">Applied (1)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#06b6d4">Screening (2)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#8b5cf6">TechnicalTest (3)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#a78bfa">Interview (4)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#f59e0b">OfferReceived (5)</div>
+    <div class="ls-arrow">→</div>
+    <div class="ls-item" style="border-color:#22c55e">Accepted (6)</div>
+    <br>
+    <div class="ls-item" style="border-color:var(--red)">Rejected (7) ← desde cualquier punto</div>
+    <div class="ls-item" style="border-color:var(--muted)">Withdrawn (8) ← desde cualquier punto</div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 6: APPLICATION LAYER ═══════════ -->
+<div class="section" id="s5">
+  <div class="sec-label">Modulo 6 / 10</div>
+  <h2>Application Layer — CQRS y MediatR</h2>
+  <p class="subtitle">CQRS (Command Query Responsibility Segregation) separa las operaciones de escritura (Commands) de las de lectura (Queries). MediatR es el "bus" que conecta quien pide con quien ejecuta.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h4>Command (escribe)</h4>
+      <p>Cambia el estado del sistema. Puede devolver un resultado o nada (Unit).</p>
+      <div class="code"><span class="cm">// Sin retorno</span>
+<span class="kw">public record</span> <span class="ty">ChangePasswordCommand</span>(
+    <span class="ty">Guid</span> UserId,
+    <span class="ty">string</span> CurrentPassword,
+    <span class="ty">string</span> NewPassword
+) : <span class="ty">IRequest</span>;  <span class="cm">// IRequest sin &lt;T&gt;</span>
+
+<span class="cm">// Con retorno</span>
+<span class="kw">public record</span> <span class="ty">CreateJobApplicationCommand</span>(...)
+    : <span class="ty">IRequest</span>&lt;<span class="ty">JobApplicationDto</span>&gt;;
+</div>
+    </div>
+    <div class="card">
+      <h4>Query (lee)</h4>
+      <p>Solo lee datos, no modifica estado. Siempre devuelve algo.</p>
+      <div class="code"><span class="kw">public record</span> <span class="ty">GetJobApplicationsQuery</span>(
+    <span class="ty">Guid</span> UserId
+) : <span class="ty">IRequest</span>&lt;<span class="ty">List</span>&lt;<span class="ty">JobApplicationDto</span>&gt;&gt;;
+
+<span class="cm">// Handler</span>
+<span class="kw">public class</span> <span class="ty">GetJobApplicationsHandler</span>
+    : <span class="ty">IRequestHandler</span>&lt;<span class="ty">GetJobApplicationsQuery</span>,
+      <span class="ty">List</span>&lt;<span class="ty">JobApplicationDto</span>&gt;&gt;
+{
+    <span class="kw">public async</span> <span class="ty">Task</span>&lt;...&gt; <span class="fn">Handle</span>(...) { ... }
+}</div>
+    </div>
+  </div>
+
+  <h3>Pipeline de MediatR</h3>
+  <p>Antes de llegar al Handler, el request pasa por "behaviors" (middleware de MediatR):</p>
+  <div class="code">  HTTP Request
+       ↓
+  Controller → _sender.Send(command)
+       ↓
+  ┌─────────────────────────────────┐
+  │      MediatR Pipeline           │
+  │                                 │
+  │  1. ValidationBehavior          │  ← FluentValidation ejecuta aqui
+  │     └─ Si invalido: throw 400   │
+  │                                 │
+  │  2. Tu Handler                  │  ← Logica de negocio
+  │     └─ Accede a repos/DB        │
+  │                                 │
+  └─────────────────────────────────┘
+       ↓
+  Controller → return resultado</div>
+
+  <h3>Validators (FluentValidation)</h3>
+  <div class="code"><span class="kw">public class</span> <span class="ty">CreateJobApplicationValidator</span>
+    : <span class="ty">AbstractValidator</span>&lt;<span class="ty">CreateJobApplicationCommand</span>&gt;
+{
+    <span class="kw">public</span> <span class="fn">CreateJobApplicationValidator</span>()
+    {
+        <span class="fn">RuleFor</span>(x =&gt; x.Title)
+            .<span class="fn">NotEmpty</span>().<span class="fn">MaximumLength</span>(<span class="nu">200</span>);
+
+        <span class="fn">RuleFor</span>(x =&gt; x.CompanyName)
+            .<span class="fn">NotEmpty</span>().<span class="fn">MaximumLength</span>(<span class="nu">200</span>);
+
+        <span class="fn">RuleFor</span>(x =&gt; x.UserId)
+            .<span class="fn">NotEmpty</span>();
+    }
+}</div>
+
+  <h3>DTOs — Por que no devolver la entidad directamente?</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h4>Problema con entidades directas</h4>
+      <p>— Expones campos internos (PasswordHash)</p>
+      <p>— Cambiar la entidad rompe la API publica</p>
+      <p>— Ciclos de referencia en JSON</p>
+      <p>— Los enums se serializan como string por defecto (quieres int)</p>
+    </div>
+    <div class="card">
+      <h4>Solucion con DTOs</h4>
+      <div class="code"><span class="kw">public class</span> <span class="ty">JobApplicationDto</span>
+{
+    <span class="kw">public</span> <span class="ty">Guid</span> Id { <span class="kw">get set</span>; }
+    <span class="kw">public string</span> Title { <span class="kw">get set</span>; }
+    <span class="kw">public string</span> CompanyName { <span class="kw">get set</span>; }
+    <span class="cm">// Status como int, NO como string!</span>
+    <span class="kw">public int</span> Status { <span class="kw">get set</span>; }
+    <span class="kw">public</span> <span class="ty">DateTime</span>? UpdatedAt { <span class="kw">get set</span>; }
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 7: INFRASTRUCTURE ═══════════ -->
+<div class="section" id="s6">
+  <div class="sec-label">Modulo 7 / 10</div>
+  <h2>Infrastructure Layer</h2>
+  <p class="subtitle">Implementaciones concretas de las interfaces definidas en Application/Domain. Aqui vive todo lo que toca el mundo exterior: DB, cache, email, tokens.</p>
+
+  <h3>EF Core — Repository Pattern</h3>
+  <div class="grid g2">
+    <div>
+      <p><strong>Patron Repository:</strong> oculta la implementacion de acceso a datos. El handler solo conoce la interfaz <code>IJobApplicationRepository</code>, no sabe si es PostgreSQL o MongoDB.</p>
+      <div class="code"><span class="cm">// Interfaz en Domain</span>
+<span class="kw">public interface</span> <span class="ty">IJobApplicationRepository</span>
+{
+    <span class="ty">Task</span>&lt;<span class="ty">List</span>&lt;<span class="ty">JobApplication</span>&gt;&gt;
+        <span class="fn">GetByUserIdAsync</span>(<span class="ty">Guid</span> userId, ...);
+    <span class="ty">Task</span> <span class="fn">AddAsync</span>(<span class="ty">JobApplication</span> app, ...);
+    <span class="ty">Task</span> <span class="fn">UpdateAsync</span>(<span class="ty">JobApplication</span> app, ...);
+    <span class="ty">Task</span> <span class="fn">DeleteAsync</span>(<span class="ty">Guid</span> id, ...);
+}
+
+<span class="cm">// Implementacion en Infrastructure</span>
+<span class="kw">public class</span> <span class="ty">JobApplicationRepository</span>
+    : <span class="ty">IJobApplicationRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="ty">ApplicationDbContext</span> _db;
+    <span class="kw">public async</span> <span class="ty">Task</span>&lt;<span class="ty">List</span>&lt;<span class="ty">JobApplication</span>&gt;&gt;
+        <span class="fn">GetByUserIdAsync</span>(<span class="ty">Guid</span> userId, ...)
+        =&gt; <span class="kw">await</span> _db.JobApplications
+            .<span class="fn">Where</span>(a =&gt; a.UserId == userId)
+            .<span class="fn">ToListAsync</span>(ct);
+}</div>
+    </div>
+    <div>
+      <p><strong>Unit of Work:</strong> agrupa multiples operaciones en una sola transaccion. Si algo falla, todo se revierte.</p>
+      <div class="code"><span class="kw">public interface</span> <span class="ty">IUnitOfWork</span>
+{
+    <span class="ty">Task</span>&lt;<span class="ty">int</span>&gt; <span class="fn">SaveChangesAsync</span>(...);
+}
+
+<span class="cm">// En el handler:</span>
+<span class="kw">await</span> _repository.<span class="fn">AddAsync</span>(app, ct);
+<span class="kw">await</span> _unitOfWork.<span class="fn">SaveChangesAsync</span>(ct);
+<span class="cm">// EF Core hace 1 solo INSERT en DB</span></div>
+      <p style="margin-top:12px"><strong>Migrations:</strong> versionado del schema de la DB. En lugar de alterar la DB manualmente, EF genera archivos de migracion que se aplican automaticamente al iniciar la API.</p>
+      <div class="code">dotnet ef migrations add NombreMigracion
+dotnet ef database update
+<span class="cm">// O automaticamente en Program.cs:</span>
+db.Database.<span class="fn">Migrate</span>();</div>
+    </div>
+  </div>
+
+  <h3>Redis Cache — Con fallback graceful</h3>
+  <div class="code"><span class="kw">public class</span> <span class="ty">RedisCacheService</span> : <span class="ty">ICacheService</span>
+{
+    <span class="kw">public async</span> <span class="ty">Task</span>&lt;<span class="ty">T</span>?&gt; <span class="fn">GetAsync</span>&lt;<span class="ty">T</span>&gt;(<span class="ty">string</span> key, ...)
+    {
+        <span class="kw">try</span>
+        {
+            <span class="kw">var</span> json = <span class="kw">await</span> _cache.<span class="fn">GetStringAsync</span>(key, ct);
+            <span class="kw">return</span> json == <span class="kw">null</span> ? <span class="kw">default</span>
+                : <span class="ty">JsonSerializer</span>.<span class="fn">Deserialize</span>&lt;<span class="ty">T</span>&gt;(json);
+        }
+        <span class="kw">catch</span> (<span class="ty">Exception</span> ex)
+        {
+            <span class="cm">// Si Redis no esta disponible, solo loggea</span>
+            <span class="cm">// y continua sin cache (no rompe el flujo)</span>
+            _logger.<span class="fn">LogWarning</span>(ex, <span class="st">"Redis unavailable"</span>);
+            <span class="kw">return default</span>;
+        }
+    }
+}</div>
+
+  <h3>StaleNotificationService — Background Job</h3>
+  <div class="code"><span class="cm">// Se ejecuta cada 24h en background</span>
+<span class="kw">public class</span> <span class="ty">StaleNotificationService</span> : <span class="ty">BackgroundService</span>
+{
+    <span class="kw">protected override async</span> <span class="ty">Task</span> <span class="fn">ExecuteAsync</span>(<span class="ty">CancellationToken</span> ct)
+    {
+        <span class="kw">while</span> (!ct.IsCancellationRequested)
+        {
+            <span class="kw">await</span> <span class="fn">CheckAndNotifyAsync</span>(ct);
+            <span class="kw">await</span> <span class="ty">Task</span>.<span class="fn">Delay</span>(<span class="ty">TimeSpan</span>.<span class="fn">FromHours</span>(<span class="nu">24</span>), ct);
+        }
+    }
+    <span class="cm">// Busca apps con 7+ dias sin actividad</span>
+    <span class="cm">// Agrupa por usuario → envia 1 email por usuario</span>
+    <span class="cm">// Usa IServiceScopeFactory porque DbContext es scoped</span>
+    <span class="cm">// y BackgroundService es singleton</span>
+}</div>
+</div>
+
+<!-- ═══════════ SECTION 8: API LAYER ═══════════ -->
+<div class="section" id="s7">
+  <div class="sec-label">Modulo 8 / 10</div>
+  <h2>API Layer</h2>
+  <p class="subtitle">La capa mas externa del backend. Recibe las peticiones HTTP, extrae informacion del JWT, delega a Application, y devuelve las respuestas HTTP correctas.</p>
+
+  <h3>Endpoints completos</h3>
+  <table>
+    <tr><th>Metodo</th><th>Ruta</th><th>Descripcion</th><th>Rate Limit</th></tr>
+    <tr><td><span class="m-post">POST</span></td><td>/api/auth/register</td><td>Registro de usuario</td><td>10/min</td></tr>
+    <tr><td><span class="m-post">POST</span></td><td>/api/auth/login</td><td>Login, devuelve JWT + refresh</td><td>10/min</td></tr>
+    <tr><td><span class="m-post">POST</span></td><td>/api/auth/refresh</td><td>Renueva access token</td><td>10/min</td></tr>
+    <tr><td><span class="m-post">POST</span></td><td>/api/auth/logout</td><td>Revoca refresh token</td><td>10/min</td></tr>
+    <tr><td><span class="m-get">GET</span></td><td>/api/jobapplications/{userId}</td><td>Lista todas las aplicaciones del usuario</td><td>60/min</td></tr>
+    <tr><td><span class="m-post">POST</span></td><td>/api/jobapplications</td><td>Crear nueva aplicacion</td><td>60/min</td></tr>
+    <tr><td><span class="m-put">PUT</span></td><td>/api/jobapplications/{id}</td><td>Actualizar status + notes</td><td>60/min</td></tr>
+    <tr><td><span class="m-patch">PATCH</span></td><td>/api/jobapplications/{id}</td><td>Editar titulo / URL / notes</td><td>60/min</td></tr>
+    <tr><td><span class="m-del">DELETE</span></td><td>/api/jobapplications/{id}</td><td>Eliminar aplicacion</td><td>60/min</td></tr>
+    <tr><td><span class="m-put">PUT</span></td><td>/api/users/me/password</td><td>Cambiar contrasena</td><td>60/min</td></tr>
+  </table>
+
+  <h3>Program.cs — El orden del middleware importa</h3>
+  <div class="code"><span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+app.<span class="fn">UseSerilogRequestLogging</span>();       <span class="cm">// 1. Loggea todos los requests</span>
+app.<span class="fn">UseCors</span>(<span class="st">"Frontend"</span>);               <span class="cm">// 2. CORS antes que todo</span>
+app.<span class="fn">UseRateLimiter</span>();                  <span class="cm">// 3. Limita requests por IP</span>
+app.<span class="fn">UseMiddleware</span>&lt;<span class="ty">ExceptionHandlingMiddleware</span>&gt;(); <span class="cm">// 4. Captura errores</span>
+app.<span class="fn">UseSwagger</span>();                      <span class="cm">// 5. Swagger UI</span>
+app.<span class="fn">UseHttpsRedirection</span>();             <span class="cm">// 6. Redirige HTTP → HTTPS</span>
+app.<span class="fn">UseAuthentication</span>();              <span class="cm">// 7. Valida el JWT</span>
+app.<span class="fn">UseAuthorization</span>();               <span class="cm">// 8. Verifica permisos [Authorize]</span>
+app.<span class="fn">MapControllers</span>();                 <span class="cm">// 9. Enruta a controllers</span></div>
+
+  <h3>CORS — Cross-Origin Resource Sharing</h3>
+  <div class="info">
+    El navegador bloquea requests a dominios distintos por seguridad. CORS permite que el frontend en <code>gleaming-lollipop-3b4183.netlify.app</code> haga requests a <code>azurewebsites.net</code>. Sin esta configuracion: error en consola del browser.
+  </div>
+  <div class="code">policy.<span class="fn">WithOrigins</span>(
+    <span class="st">"http://localhost:5173"</span>,
+    <span class="st">"http://localhost:5174"</span>,
+    <span class="st">"https://gleaming-lollipop-3b4183.netlify.app"</span>
+).<span class="fn">AllowAnyHeader</span>().<span class="fn">AllowAnyMethod</span>();</div>
+
+  <h3>Respuestas de error estandarizadas (RFC 9110)</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h4>400 — ValidationException</h4>
+      <div class="code">{
+  <span class="pr">"title"</span>: <span class="st">"Validation failed"</span>,
+  <span class="pr">"status"</span>: <span class="nu">400</span>,
+  <span class="pr">"errors"</span>: {
+    <span class="pr">"Title"</span>: [<span class="st">"Title is required"</span>]
+  }
+}</div>
+    </div>
+    <div class="card">
+      <h4>401 — UnauthorizedAccessException</h4>
+      <div class="code">{
+  <span class="pr">"title"</span>: <span class="st">"Unauthorized"</span>,
+  <span class="pr">"status"</span>: <span class="nu">401</span>,
+  <span class="pr">"detail"</span>: <span class="st">"Current password is incorrect."</span>
+}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION 9: FRONTEND ═══════════ -->
+<div class="section" id="s8">
+  <div class="sec-label">Modulo 9 / 10</div>
+  <h2>Frontend — React + TypeScript</h2>
+  <p class="subtitle">SPA (Single Page Application) construida con React 18, TypeScript, Vite y Tailwind CSS v4. El estado de la autenticacion y los toasts se manejan via Context API.</p>
+
+  <h3>Arbol de archivos</h3>
+  <div class="tree">
+<span class="dir">frontend/src/</span>
+├── <span class="dir">api/</span>
+│   ├── <span class="file">client.ts</span>          <span class="note">← axios instance + interceptor refresh JWT</span>
+│   └── <span class="file">jobApplications.ts</span> <span class="note">← todas las llamadas HTTP al backend</span>
+├── <span class="dir">components/</span>
+│   ├── <span class="file">JobApplicationCard.tsx</span>    <span class="note">← tarjeta individual</span>
+│   ├── <span class="file">AddApplicationModal.tsx</span>   <span class="note">← modal crear</span>
+│   ├── <span class="file">EditApplicationModal.tsx</span>  <span class="note">← modal editar</span>
+│   ├── <span class="file">ChangePasswordModal.tsx</span>   <span class="note">← modal contrasena</span>
+│   └── <span class="file">ProtectedRoute.tsx</span>        <span class="note">← guard de rutas privadas</span>
+├── <span class="dir">context/</span>
+│   ├── <span class="file">AuthContext.tsx</span>    <span class="note">← userId, login(), logout()</span>
+│   ├── <span class="file">ToastContext.tsx</span>   <span class="note">← showSuccess(), showError()</span>
+│   └── <span class="file">ThemeContext.tsx</span>   <span class="note">← theme, toggleTheme()</span>
+├── <span class="dir">pages/</span>
+│   ├── <span class="file">LoginPage.tsx</span>
+│   ├── <span class="file">RegisterPage.tsx</span>
+│   └── <span class="file">DashboardPage.tsx</span>  <span class="note">← pagina principal, 400+ lineas</span>
+└── <span class="dir">types/</span>
+    └── <span class="file">index.ts</span>  <span class="note">← ApplicationStatus enum, JobApplication interface</span>
+  </div>
+
+  <h3>Context API — Estado Global</h3>
+  <div class="grid g2">
+    <div class="card">
+      <h4>AuthContext</h4>
+      <p>Provee <code>userId</code>, <code>login(token, userId)</code>, <code>logout()</code>. Guarda en localStorage. Disponible en toda la app via <code>useAuth()</code>.</p>
+    </div>
+    <div class="card">
+      <h4>ToastContext</h4>
+      <p>Notificaciones visuales. <code>showSuccess('msg')</code> y <code>showError('msg')</code>. Auto-desaparecen en 4s. Esquina inferior derecha.</p>
+    </div>
+    <div class="card">
+      <h4>ThemeContext</h4>
+      <p>Dark/light mode. Toggle persiste en localStorage. Agrega/remueve clase <code>.dark</code> en <code>document.documentElement</code>.</p>
+    </div>
+    <div class="card">
+      <h4>Providers en App.tsx</h4>
+      <div class="code">&lt;<span class="ty">ThemeProvider</span>&gt;
+  &lt;<span class="ty">AuthProvider</span>&gt;
+    &lt;<span class="ty">ToastProvider</span>&gt;
+      &lt;<span class="ty">BrowserRouter</span>&gt;
+        <span class="cm">{/* routes */}</span>
+      &lt;/<span class="ty">BrowserRouter</span>&gt;
+    &lt;/<span class="ty">ToastProvider</span>&gt;
+  &lt;/<span class="ty">AuthProvider</span>&gt;
+&lt;/<span class="ty">ThemeProvider</span>&gt;</div>
+    </div>
+  </div>
+
+  <h3>DashboardPage — Logica central</h3>
+  <div class="grid g2">
+    <div>
+      <h4>Estado local principal</h4>
+      <div class="code"><span class="kw">const</span> [applications, setApplications] =
+    <span class="fn">useState</span>&lt;<span class="ty">JobApplication</span>[]&gt;([]);
+<span class="kw">const</span> [searchTerm, setSearchTerm] = <span class="fn">useState</span>(<span class="st">''</span>);
+<span class="kw">const</span> [statusFilter, setStatusFilter] =
+    <span class="fn">useState</span>&lt;<span class="ty">number</span> | <span class="st">'all'</span>&gt;(<span class="st">'all'</span>);
+<span class="kw">const</span> [page, setPage] = <span class="fn">useState</span>(<span class="nu">1</span>);
+<span class="kw">const</span> PAGE_SIZE = <span class="nu">12</span>;</div>
+    </div>
+    <div>
+      <h4>Filtrado client-side</h4>
+      <div class="code"><span class="kw">const</span> filtered = applications
+  .<span class="fn">filter</span>(a =&gt; statusFilter === <span class="st">'all'</span>
+    || a.status === statusFilter)
+  .<span class="fn">filter</span>(a =&gt; !searchTerm
+    || a.title.<span class="fn">toLowerCase</span>()
+        .<span class="fn">includes</span>(searchTerm.<span class="fn">toLowerCase</span>())
+    || a.companyName.<span class="fn">toLowerCase</span>()
+        .<span class="fn">includes</span>(searchTerm.<span class="fn">toLowerCase</span>()));
+<span class="cm">// Paginacion en memoria</span>
+<span class="kw">const</span> paged = filtered.<span class="fn">slice</span>(
+  (page-<span class="nu">1</span>) * PAGE_SIZE, page * PAGE_SIZE);</div>
+    </div>
+  </div>
+
+  <h3>Stale Banner — Deteccion de inactividad</h3>
+  <div class="code"><span class="kw">const</span> STALE_DAYS = <span class="nu">7</span>;
+<span class="kw">const</span> cutoff = <span class="ty">Date</span>.<span class="fn">now</span>() - STALE_DAYS * <span class="nu">24</span> * <span class="nu">60</span> * <span class="nu">60</span> * <span class="nu">1000</span>;
+
+<span class="kw">const</span> stale = applications.<span class="fn">filter</span>(a =&gt;
+  ACTIVE_STATUSES.<span class="fn">includes</span>(a.status) &amp;&amp;
+  <span class="kw">new</span> <span class="ty">Date</span>(a.updatedAt ?? a.createdAt).<span class="fn">getTime</span>() &lt; cutoff
+);
+<span class="cm">// Si stale.length > 0 → muestra banner amarillo</span></div>
+
+  <h3>CSV Export — Sin dependencias</h3>
+  <div class="code"><span class="kw">const</span> <span class="fn">exportCSV</span> = () =&gt; {
+  <span class="kw">const</span> rows = applications.<span class="fn">map</span>(a =&gt; [
+    a.title, a.companyName, a.status, a.jobUrl ?? <span class="st">''</span>
+  ]);
+  <span class="kw">const</span> csv = [<span class="st">'Title,Company,Status,URL'</span>, ...rows
+    .<span class="fn">map</span>(r =&gt; r.<span class="fn">map</span>(v =&gt; <span class="st">`"</span>${v}<span class="st">"`</span>).<span class="fn">join</span>(<span class="st">','</span>))].<span class="fn">join</span>(<span class="st">'\n'</span>);
+  <span class="kw">const</span> blob = <span class="kw">new</span> <span class="ty">Blob</span>([csv], { type: <span class="st">'text/csv'</span> });
+  <span class="kw">const</span> url = <span class="ty">URL</span>.<span class="fn">createObjectURL</span>(blob);
+  <span class="kw">const</span> a = document.<span class="fn">createElement</span>(<span class="st">'a'</span>);
+  a.href = url; a.download = <span class="st">'applications.csv'</span>; a.<span class="fn">click</span>();
+  <span class="ty">URL</span>.<span class="fn">revokeObjectURL</span>(url);
+};</div>
+</div>
+
+<!-- ═══════════ SECTION 10: CI/CD ═══════════ -->
+<div class="section" id="s9">
+  <div class="sec-label">Modulo 10 / 10</div>
+  <h2>CI/CD Pipeline</h2>
+  <p class="subtitle">Cada git push a main dispara automaticamente: tests → validacion Docker → deploy a Azure → deploy a Netlify. Cero deploys manuales.</p>
+
+  <div class="pipe">
+    <div class="pstep" onclick="showPipe(this,'git')">
+      <div class="pi">📤</div>
+      <div class="pn">git push</div>
+      <div class="pd">origin main</div>
+    </div>
+    <div class="pipe-arr">→</div>
+    <div class="pstep" onclick="showPipe(this,'build')">
+      <div class="pi">🔨</div>
+      <div class="pn">Build &amp; Test</div>
+      <div class="pd">22 tests</div>
+    </div>
+    <div class="pipe-arr">→</div>
+    <div class="pstep" onclick="showPipe(this,'docker')">
+      <div class="pi">🐳</div>
+      <div class="pn">Docker Build</div>
+      <div class="pd">Valida imagen</div>
+    </div>
+    <div class="pipe-arr">→</div>
+    <div class="pstep" onclick="showPipe(this,'azure')">
+      <div class="pi">☁️</div>
+      <div class="pn">Deploy API</div>
+      <div class="pd">Azure App Service</div>
+    </div>
+    <div class="pipe-arr">→</div>
+    <div class="pstep" onclick="showPipe(this,'netlify')">
+      <div class="pi">🌍</div>
+      <div class="pn">Deploy Frontend</div>
+      <div class="pd">Netlify</div>
+    </div>
+  </div>
+  <div id="pipe-detail" class="card" style="display:none;margin-top:8px"></div>
+
+  <h3>GitHub Secrets necesarios</h3>
+  <table>
+    <tr><th>Secret</th><th>Usado en</th><th>Descripcion</th></tr>
+    <tr><td><span class="tag">AZURE_APP_NAME</span></td><td>deploy-api</td><td>Nombre del Web App en Azure</td></tr>
+    <tr><td><span class="tag">AZURE_PUBLISH_PROFILE</span></td><td>deploy-api</td><td>Credenciales de despliegue Azure</td></tr>
+    <tr><td><span class="tag">NETLIFY_AUTH_TOKEN</span></td><td>deploy-frontend</td><td>Token personal de Netlify</td></tr>
+    <tr><td><span class="tag">NETLIFY_SITE_ID</span></td><td>deploy-frontend</td><td>ID del sitio en Netlify</td></tr>
+    <tr><td><span class="tag">VITE_API_URL</span></td><td>deploy-frontend</td><td>URL del backend → inyectada en build</td></tr>
+  </table>
+
+  <h3>ci.yml — Estructura del pipeline</h3>
+  <div class="code"><span class="cm"># .github/workflows/ci.yml</span>
+<span class="kw">on</span>:
+  push: { branches: [main] }
+  pull_request: { branches: [main] }
+
+<span class="kw">jobs</span>:
+  <span class="fn">build-and-test</span>:
+    steps:
+      - dotnet build --configuration Release
+      - dotnet test  <span class="cm"># 10 unit + 12 integration = 22 tests</span>
+
+  <span class="fn">docker-build</span>:
+    needs: build-and-test    <span class="cm"># no corre si los tests fallan</span>
+    steps:
+      - docker build . -t jobtrackerpro:latest
+
+  <span class="fn">deploy-api</span>:
+    needs: docker-build
+    steps:
+      - dotnet publish -c Release
+      - azure/webapps-deploy@v3
+
+  <span class="fn">deploy-frontend</span>:
+    needs: build-and-test
+    steps:
+      - npm ci &amp;&amp; npm run build
+      - nwtgck/actions-netlify@v3</div>
+
+  <h3>Variables de entorno en Azure App Service</h3>
+  <div class="info">
+    En Azure, las variables anidadas usan <strong>doble guion bajo</strong> en lugar de dos puntos. Ejemplo: <code>JwtSettings:Secret</code> en appsettings.json se configura como <code>JwtSettings__Secret</code> en el App Service.
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h4>App Settings (variables)</h4>
+      <div class="tag">JwtSettings__Secret</div>
+      <div class="tag">JwtSettings__Issuer</div>
+      <div class="tag">JwtSettings__Audience</div>
+    </div>
+    <div class="card">
+      <h4>Connection Strings</h4>
+      <div class="tag">DefaultConnection</div>
+      <p style="margin-top:8px;font-size:12px">Tipo: Custom. Formato Npgsql: <code>Host=...;Database=...;Username=...;Password=...;SSL Mode=Require;</code></p>
+    </div>
+  </div>
+
+  <hr>
+  <div class="info ok">
+    <strong>El proyecto esta completo como MVP de produccion.</strong> Backend en Azure, frontend en Netlify, CI/CD automatico, auth JWT, CRUD completo, dark mode, CSV export, change password, stale notifications. Todo deployado y funcionando.
+  </div>
+</div>
+
+</main>
+
+<div class="nav-bar">
+  <button class="btn btn-s" onclick="prev()" style="padding:6px 14px">&#8592; Anterior</button>
+  <div class="nav-dots" id="navDots"></div>
+  <button class="btn btn-p" onclick="next()" style="padding:6px 14px">Siguiente &#8594;</button>
+</div>
+
+<script>
+const SECTIONS = [
+  { id:'s0', icon:'⚙️', label:'Stack Tecnologico' },
+  { id:'s1', icon:'🏗️', label:'Clean Architecture' },
+  { id:'s2', icon:'🔄', label:'Flujo Completo' },
+  { id:'s3', icon:'🔐', label:'Autenticacion JWT' },
+  { id:'s4', icon:'🎯', label:'Domain Layer' },
+  { id:'s5', icon:'⚡', label:'Application (CQRS)' },
+  { id:'s6', icon:'🔧', label:'Infrastructure' },
+  { id:'s7', icon:'🌐', label:'API Layer' },
+  { id:'s8', icon:'⚛️', label:'Frontend React' },
+  { id:'s9', icon:'🚀', label:'CI/CD Pipeline' },
+];
+
+let cur = 0;
+
+// Build nav
+const navList = document.getElementById('navList');
+const navDots = document.getElementById('navDots');
+SECTIONS.forEach((s,i)=>{
+  navList.innerHTML += `<div class="nav-item${i===0?' active':''}" onclick="goto(${i})">
+    <div class="nav-num">${i+1}</div>
+    <span>${s.icon} ${s.label}</span>
+  </div>`;
+  navDots.innerHTML += `<div class="dot${i===0?' on':''}" onclick="goto(${i})" title="${s.label}"></div>`;
+});
+
+function goto(idx){
+  document.querySelector('.section.active')?.classList.remove('active');
+  document.querySelectorAll('.nav-item')[cur]?.classList.remove('active');
+  document.querySelectorAll('.dot')[cur]?.classList.remove('on');
+  cur = Math.max(0, Math.min(SECTIONS.length-1, idx));
+  document.getElementById(SECTIONS[cur].id)?.classList.add('active');
+  document.querySelectorAll('.nav-item')[cur]?.classList.add('active');
+  document.querySelectorAll('.dot')[cur]?.classList.add('on');
+  document.getElementById('prog').style.width = ((cur+1)/SECTIONS.length*100)+'%';
+  document.getElementById('main').scrollTop = 0;
+}
+function next(){ goto(cur+1); }
+function prev(){ goto(cur-1); }
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') next();
+  else if(e.key==='ArrowLeft'||e.key==='ArrowUp') prev();
+  else if(e.key>='1'&&e.key<='9') goto(parseInt(e.key)-1);
+  else if(e.key==='0') goto(9);
+});
+
+// Tech card toggle
+function toggle(el){ el.classList.toggle('expanded'); }
+
+// Layer details
+function showLayer(id){
+  document.querySelectorAll('.layer-detail').forEach(d=>d.classList.remove('show'));
+  document.querySelectorAll('.arch-layer').forEach(l=>l.classList.remove('selected'));
+  const d = document.getElementById('ld-'+id);
+  if(d){ d.classList.add('show'); d.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+}
+
+// JWT details
+function showJwt(id){
+  document.querySelectorAll('.jwt-detail').forEach(d=>d.classList.remove('show'));
+  const d = document.getElementById('jwt-'+id);
+  if(d) d.classList.toggle('show');
+}
+
+// Flow animation
+const FLOW_STEPS = [
+  { badge:'b-fe',  bl:'Frontend', title:'Usuario llena el formulario', detail:'AddApplicationModal.tsx: estado local con React useState', code:'const [title, setTitle] = useState("")' },
+  { badge:'b-fe',  bl:'Frontend', title:'Axios POST /api/jobapplications', detail:'client.ts adjunta el JWT en Authorization header', code:'axios.post("/api/jobapplications", dto, { headers: {...} })' },
+  { badge:'b-api', bl:'API', title:'JobApplicationsController.Create()', detail:'Extrae userId del JWT claim "sub" con ClaimTypes.NameIdentifier', code:'var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)' },
+  { badge:'b-api', bl:'API', title:'_sender.Send(CreateJobApplicationCommand)', detail:'MediatR recibe el command y busca el handler registrado', code:'await _sender.Send(new CreateJobApplicationCommand(...))' },
+  { badge:'b-app', bl:'Application', title:'ValidationBehavior ejecuta FluentValidation', detail:'Valida que Title y CompanyName no esten vacios. Si falla: 400', code:'RuleFor(x => x.Title).NotEmpty().MaximumLength(200)' },
+  { badge:'b-app', bl:'Application', title:'CreateJobApplicationHandler.Handle()', detail:'Logica de negocio: busca o crea la empresa por nombre', code:'var company = await _companyRepo.GetByNameAsync(...)' },
+  { badge:'b-dom', bl:'Domain', title:'JobApplication.Create(...)', detail:'Constructor de dominio. Establece Status=Saved, UserId, timestamps', code:'return new JobApplication { Id = Guid.NewGuid(), Status = Saved }' },
+  { badge:'b-inf', bl:'Infrastructure', title:'_repository.AddAsync(application)', detail:'EF Core trackea la entidad. Aun no escribe en DB.', code:'await _context.JobApplications.AddAsync(app, ct)' },
+  { badge:'b-inf', bl:'Infrastructure', title:'_unitOfWork.SaveChangesAsync()', detail:'EF Core ejecuta el INSERT en PostgreSQL (Neon.tech)', code:'await _context.SaveChangesAsync(ct)  // → INSERT SQL' },
+  { badge:'b-db',  bl:'Base de Datos', title:'PostgreSQL guarda el registro', detail:'Neon.tech serverless PostgreSQL. Responde el GUID generado.', code:'INSERT INTO "JobApplications" (...) VALUES (...)' },
+  { badge:'b-app', bl:'Application', title:'Handler mapea entidad a JobApplicationDto', detail:'Status se devuelve como int. CompanyName del objeto Company.', code:'return new JobApplicationDto { Status = (int)app.Status, ... }' },
+  { badge:'b-api', bl:'API', title:'Controller devuelve 201 Created', detail:'CreatedAtAction incluye Location header con la URL del recurso', code:'return CreatedAtAction("GetById", new { id }, dto)' },
+  { badge:'b-fe',  bl:'Frontend', title:'React actualiza el estado y muestra toast', detail:'setApplications([...prev, newApp]) — React re-renderiza las tarjetas', code:'showSuccess("Application added!");\nsetShowModal(false)' },
+];
+
+let flowIdx = -1, flowTimer = null;
+
+function buildFlow(){
+  const cont = document.getElementById('flowSteps');
+  if(cont.children.length > 0) return;
+  cont.innerHTML = FLOW_STEPS.map((s,i)=>`
+    <div class="fstep" id="fs${i}">
+      <div class="num">${i+1}</div>
+      <span class="badge ${s.badge}">${s.bl}</span>
+      <div>
+        <div class="step-title">${s.title}</div>
+        <div class="step-detail">${s.detail}</div>
+        <div class="step-code">${s.code.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>`).join('');
+}
+
+function startFlow(){
+  buildFlow();
+  resetFlow();
+  const msg = document.getElementById('flowMsg');
+  flowTimer = setInterval(()=>{
+    if(flowIdx >= 0) document.getElementById('fs'+flowIdx)?.classList.replace('lit','done');
+    flowIdx++;
+    if(flowIdx >= FLOW_STEPS.length){
+      clearInterval(flowTimer);
+      msg.textContent = '✓ Flujo completo — '+FLOW_STEPS.length+' pasos de Frontend a PostgreSQL y de regreso';
+      return;
+    }
+    const el = document.getElementById('fs'+flowIdx);
+    el?.classList.add('lit');
+    el?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    msg.textContent = 'Paso '+(flowIdx+1)+' / '+FLOW_STEPS.length+': '+FLOW_STEPS[flowIdx].title;
+  }, 900);
+}
+
+function resetFlow(){
+  clearInterval(flowTimer);
+  flowIdx = -1;
+  buildFlow();
+  document.querySelectorAll('.fstep').forEach(el=>{
+    el.classList.remove('lit','done');
+  });
+  document.getElementById('flowMsg').textContent = 'Presiona Reproducir para comenzar la animacion';
+}
+
+// Pipeline details
+const PIPE_INFO = {
+  git: '<h4>git push origin main</h4><p>Disparador del pipeline. GitHub Actions detecta el push y comienza el workflow definido en .github/workflows/ci.yml</p>',
+  build: '<h4>Job: build-and-test</h4><p>1. <code>dotnet build --configuration Release</code> — compila los 4 proyectos</p><p>2. <code>dotnet test</code> — ejecuta 10 unit tests + 12 integration tests con InMemory DB</p><p>Si algun test falla, los jobs siguientes se cancelan (needs: build-and-test)</p>',
+  docker: '<h4>Job: docker-build</h4><p><code>docker build . -t jobtrackerpro:latest</code></p><p>Valida que el Dockerfile sea correcto y que la imagen se construya. No hace push a ningun registry — solo verifica que el build funcione.</p>',
+  azure: '<h4>Job: deploy-api</h4><p>1. <code>dotnet publish -c Release -o ./publish</code> — genera los binarios optimizados</p><p>2. <code>azure/webapps-deploy@v3</code> — sube los archivos al Azure App Service</p><p>La API queda disponible en: <code>jobtracker-api-prod-*.azurewebsites.net</code></p>',
+  netlify: '<h4>Job: deploy-frontend</h4><p>1. <code>npm ci</code> — instala dependencias exactas del package-lock.json</p><p>2. <code>npm run build</code> — Vite compila TypeScript + React → archivos estaticos en dist/</p><p>3. <code>nwtgck/actions-netlify@v3</code> — sube dist/ a Netlify</p><p>El sitio queda disponible en: <code>gleaming-lollipop-3b4183.netlify.app</code></p>',
+};
+
+function showPipe(el, id){
+  document.querySelectorAll('.pstep').forEach(p=>p.style.borderColor='');
+  el.style.borderColor = 'var(--blue)';
+  const d = document.getElementById('pipe-detail');
+  d.style.display = 'block';
+  d.innerHTML = PIPE_INFO[id] || '';
+}
+
+// Init progress bar
+document.getElementById('prog').style.width = (1/SECTIONS.length*100)+'%';
+</script>
+</body>
+</html>
