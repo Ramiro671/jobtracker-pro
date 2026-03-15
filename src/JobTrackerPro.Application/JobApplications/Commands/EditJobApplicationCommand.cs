@@ -6,7 +6,7 @@ namespace JobTrackerPro.Application.JobApplications.Commands;
 public record EditJobApplicationCommand(
     Guid Id,
     string Title,
-    string CompanyName,
+    string? CompanyName,
     string? JobUrl,
     string? Notes
 ) : IRequest<bool>;

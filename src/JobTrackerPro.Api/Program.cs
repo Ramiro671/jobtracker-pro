@@ -40,26 +40,31 @@ try
                   .AllowAnyMethod()));
 
     // ── Rate limiting ─────────────────────────────────────────
-    builder.Services.AddRateLimiter(options =>
+    // Disabled in Testing: all requests share one IP in WebApplicationFactory,
+    // so a 10-req/min limit would reject half the integration tests with 429.
+    if (!builder.Environment.IsEnvironment("Testing"))
     {
-        // General API: 60 requests/minute per IP
-        options.AddFixedWindowLimiter("api", policy =>
+        builder.Services.AddRateLimiter(options =>
         {
-            policy.PermitLimit = 60;
-            policy.Window = TimeSpan.FromMinutes(1);
-            policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-            policy.QueueLimit = 0;
+            // General API: 60 requests/minute per IP
+            options.AddFixedWindowLimiter("api", policy =>
+            {
+                policy.PermitLimit = 60;
+                policy.Window = TimeSpan.FromMinutes(1);
+                policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                policy.QueueLimit = 0;
+            });
+            // Auth endpoints: 10 requests/minute per IP (brute-force protection)
+            options.AddFixedWindowLimiter("auth", policy =>
+            {
+                policy.PermitLimit = 10;
+                policy.Window = TimeSpan.FromMinutes(1);
+                policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                policy.QueueLimit = 0;
+            });
+            options.RejectionStatusCode = 429;
         });
-        // Auth endpoints: 10 requests/minute per IP (brute-force protection)
-        options.AddFixedWindowLimiter("auth", policy =>
-        {
-            policy.PermitLimit = 10;
-            policy.Window = TimeSpan.FromMinutes(1);
-            policy.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-            policy.QueueLimit = 0;
-        });
-        options.RejectionStatusCode = 429;
-    });
+    }
 
     // ── Services ──────────────────────────────────────────────
     builder.Services.AddApplication();
@@ -130,7 +135,8 @@ try
     });
 
     app.UseCors("Frontend");
-    app.UseRateLimiter();
+    if (!app.Environment.IsEnvironment("Testing"))
+        app.UseRateLimiter();
     app.UseMiddleware<ExceptionHandlingMiddleware>();
 
     app.UseSwagger();
