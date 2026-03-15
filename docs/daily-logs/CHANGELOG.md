@@ -49,11 +49,34 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] - 2026-03-14
+
+### Added
+- **Dark mode** — class-based dark mode toggle with ThemeContext; persisted in localStorage; all components updated with Tailwind `dark:` variants
+- **CSV export** — client-side export of all applications to `.csv`; no dependencies (Blob + createObjectURL)
+- **Change password** — `PUT /api/users/me/password` endpoint; `ChangePasswordCommand`, `ChangePasswordHandler`, `UsersController`; verifies current password with BCrypt before updating
+- **Automatic JWT refresh** — Axios response interceptor queues concurrent 401 requests while refreshing; retries all on success; redirects to `/login` on failure
+- **Stale email notifications** — `StaleNotificationService` (BackgroundService) runs every 24h; detects applications with 7+ days no activity; sends email per user via `SmtpEmailService` (disabled by default, logs when off)
+- **EmailSettings** configuration section in `appsettings.json` with `Enabled: false` default
+- **`IEmailService` / `SmtpEmailService`** — infrastructure email abstraction with graceful no-op when disabled
+- **Interactive visual study guide** — `docs/daily-logs/interactive-guide.html` (standalone HTML, 10 modules, animated request flow)
+- **Study guide prompt** — `docs/daily-logs/study-guide-prompt.txt` for generating a bilingual study guide via Claude Chat
+
+### Changed
+- `JobApplicationDto` now includes `WorkModality`, `SeniorityLevel`, `Source`, `SalaryMin`, `SalaryMax`, `SalaryCurrency`
+- Dashboard: search bar, edit modal (PATCH), stale banner (amber alert, 7-day threshold), pagination (12 per page)
+- Integration tests expanded from 8 to 12 cases; unit tests from 8 to 10
+
+### Security
+- Rate limiting added to `UsersController` (`[EnableRateLimiting("api")]`)
+- Change password verifies current password before hashing new one
+
+---
+
 ## [Unreleased]
 
 ### Planned
-- Email notifications for status changes
+- Surface `Description`, `TechStack`, `ContactName`, `ContactEmail` fields in API and frontend
 - Application statistics charts
-- Export to CSV
-- Dark mode
 - Mobile responsive improvements
+- LinkedInAgent.Grpc integration — auto-fill job applications from LinkedIn scraper

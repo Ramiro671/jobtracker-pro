@@ -1,0 +1,272 @@
+===========================================================================
+PROMPT PARA CLAUDE CHAT — GUIA DE ESTUDIO COMPLETA
+Copia y pega esto directamente en claude.ai
+===========================================================================
+
+You are an expert software engineering instructor and technical writer.
+I need you to generate a comprehensive, bilingual (English/Spanish) study
+guide for a full-stack web application called "JobTracker Pro" that I built.
+
+I will use this guide to prepare for technical job interviews. Print it,
+study it, and take exams from it. Make it dense, thorough, and structured
+for active studying.
+
+=== THE PROJECT STACK ===
+Backend: .NET 10, C#, Clean Architecture (Domain/Application/Infrastructure/API)
+Patterns: CQRS, MediatR, Repository Pattern, Unit of Work
+Database: PostgreSQL (Neon.tech serverless) + Redis (caching)
+ORM: Entity Framework Core with migrations
+Auth: JWT (access token 60min) + Refresh Tokens (7 days) stored in DB
+Validation: FluentValidation as MediatR pipeline behavior
+Background Jobs: BackgroundService (StaleNotificationService - daily email)
+Email: SMTP via System.Net.Mail.SmtpClient (disabled by default)
+Rate Limiting: ASP.NET Core built-in (60/min general, 10/min auth)
+Logging: Serilog (console + rolling file) + Application Insights
+Testing: xUnit, Unit Tests + Integration Tests (WebApplicationFactory + InMemory EF)
+
+Frontend: React 18, TypeScript, Vite, Tailwind CSS v4
+State: Context API (AuthContext, ToastContext, ThemeContext)
+HTTP: Axios with interceptor for automatic JWT refresh + request queuing
+Routing: React Router v6 with ProtectedRoute
+Features: Dark mode, CSV export, pagination, search, status filter, stale banner
+
+DevOps: GitHub Actions CI/CD → Azure App Service (backend) + Netlify (frontend)
+
+=== WHAT TO INCLUDE IN THE GUIDE ===
+
+Generate the guide with the following sections IN ORDER. Use Markdown.
+Each concept must appear in BOTH English and Spanish (side by side or clearly labeled).
+
+---
+
+## SECTION 1: CORE WEB CONCEPTS (Conceptos Web Fundamentales)
+
+Cover each with: definition (EN + ES), how it works, why it matters, example from the project.
+
+Topics:
+- What is an API / REST API
+- What is HTTP (methods: GET POST PUT PATCH DELETE, status codes: 200 201 204 400 401 403 404 422 429 500)
+- What is JSON (structure, types, parsing)
+- What is a Web Server vs a Client
+- What is HTTPS / TLS
+- What is CORS and why it exists
+- What is a Cookie vs localStorage vs sessionStorage
+- What is a SPA (Single Page Application) vs MPA
+- What is a build tool (Vite, Webpack)
+
+---
+
+## SECTION 2: BACKEND — .NET AND C# (Backend con .NET y C#)
+
+Topics:
+- What is .NET and the CLR
+- What is ASP.NET Core (Kestrel, middleware pipeline)
+- What is C# (typed language, OOP, records, async/await)
+- What is Dependency Injection (DI) and IoC Container
+- What is Middleware in ASP.NET Core (order matters, pipeline)
+- What is a Controller and how routing works
+- What are HTTP Attributes ([HttpGet], [FromBody], [Authorize], etc.)
+- What are C# Records vs Classes vs Structs
+- What is async/await and Task (vs thread blocking)
+- What is LINQ (.Where, .Select, .FirstOrDefault, etc.)
+- What is an Interface in C# (why we use them for testability)
+
+---
+
+## SECTION 3: CLEAN ARCHITECTURE (Arquitectura Limpia)
+
+Topics:
+- What is Clean Architecture (Robert Martin / Uncle Bob)
+- The 4 layers and their responsibilities (Domain, Application, Infrastructure, API)
+- The Dependency Rule (inner layers never depend on outer)
+- Why Domain layer has zero external dependencies
+- What is the Dependency Inversion Principle (SOLID - D)
+- Benefits for testing, maintainability, team scalability
+- Comparison: Clean Architecture vs MVC vs N-Layer
+
+Include an ASCII diagram showing the concentric circles and dependency direction.
+
+---
+
+## SECTION 4: CQRS AND MEDIATR (CQRS y MediatR)
+
+Topics:
+- What is CQRS (Command Query Responsibility Segregation)
+- Difference between Command (write) and Query (read)
+- What is the Mediator pattern and why MediatR implements it
+- What is a Pipeline Behavior (cross-cutting concerns)
+- How FluentValidation integrates as a MediatR pipeline behavior
+- Benefits: decoupling, single responsibility, testability
+- When NOT to use CQRS (over-engineering for simple apps)
+
+Include code examples in C# for: a Command record, a Handler, a Validator.
+
+---
+
+## SECTION 5: DATABASE AND ORM (Base de Datos y ORM)
+
+Topics:
+- What is SQL vs NoSQL (when to use each)
+- What is a relational database (tables, primary keys, foreign keys, joins)
+- What is an ORM (Object-Relational Mapper) and why use one
+- What is Entity Framework Core (DbContext, DbSet, migrations)
+- What is the Repository Pattern (why abstract data access)
+- What is the Unit of Work Pattern (transactions)
+- What is a database migration (schema versioning)
+- What is N+1 query problem and how to avoid it (.Include)
+- What is Redis and when to use it (cache-aside pattern)
+- Connection strings and environments (dev vs prod)
+
+---
+
+## SECTION 6: AUTHENTICATION AND SECURITY (Autenticacion y Seguridad)
+
+Topics:
+- Authentication vs Authorization (who are you vs what can you do)
+- Session-based auth vs Token-based auth
+- What is JWT (Header.Payload.Signature, Base64URL, HMAC-SHA256)
+- JWT claims (sub, iss, aud, exp, iat)
+- Why JWT is stateless (no DB lookup per request)
+- What is a Refresh Token and why we need it
+- How to store tokens safely (localStorage vs httpOnly cookie tradeoffs)
+- What is BCrypt and why we hash passwords (salted hash)
+- What is HTTPS and why it's required with JWT
+- OWASP Top 10 threats relevant to this project (XSS, CSRF, injection, brute force)
+- What is Rate Limiting and why it protects auth endpoints
+
+Include: diagram of login flow, refresh token flow.
+
+---
+
+## SECTION 7: FRONTEND FUNDAMENTALS (Fundamentos Frontend)
+
+Topics:
+- What is React and the Virtual DOM
+- What is JSX/TSX
+- What are React Components (functional vs class)
+- What are Props and State (useState)
+- What is the component lifecycle (useEffect, cleanup)
+- What is Context API and when to use it (vs Redux vs Zustand)
+- What is TypeScript and why use it with React
+- What is an interface vs type in TypeScript
+- What are generics in TypeScript (useState<T>, Array<T>)
+- What is a const enum / as const pattern
+- What is Tailwind CSS (utility-first, dark mode, responsive)
+- What is a CSS variable (:root, var())
+
+---
+
+## SECTION 8: HTTP CLIENT AND STATE MANAGEMENT (Cliente HTTP y Estado)
+
+Topics:
+- What is Axios and how it compares to fetch
+- What are Axios interceptors (request interceptor vs response interceptor)
+- How to handle 401 with automatic token refresh (queue pattern)
+- What is optimistic UI update (instant feedback before server confirms)
+- What is client-side filtering vs server-side filtering (when to use each)
+- What is pagination (offset/limit vs cursor-based)
+- What is debouncing in search inputs
+- What is the "stale data" problem and how to solve it
+
+Include: code sketch of the refresh token interceptor with queue.
+
+---
+
+## SECTION 9: DEVOPS AND CI/CD (DevOps y CI/CD)
+
+Topics:
+- What is CI/CD (Continuous Integration / Continuous Deployment)
+- What is GitHub Actions (workflow, jobs, steps, triggers)
+- What is a Docker container and Dockerfile (vs virtual machine)
+- What is Azure App Service (PaaS vs IaaS vs SaaS)
+- What is Netlify and static hosting
+- What are environment variables and secrets (why not commit them)
+- What is a deployment pipeline (build → test → deploy)
+- What is a health check endpoint
+- What is horizontal vs vertical scaling
+- What is serverless (Neon.tech PostgreSQL)
+
+---
+
+## SECTION 10: TESTING (Pruebas)
+
+Topics:
+- Unit tests vs Integration tests vs E2E tests (testing pyramid)
+- What is xUnit (.NET test framework)
+- What is a mock / stub / fake
+- What is WebApplicationFactory (ASP.NET Core integration testing)
+- What is InMemory database for testing
+- What is test isolation (each test starts clean)
+- What is Arrange-Act-Assert pattern
+- What is code coverage and why 100% is not the goal
+
+---
+
+## SECTION 11: Q&A — INTERVIEW QUESTIONS (Preguntas de Entrevista)
+
+Generate 60 interview questions with detailed answers. Group by topic.
+Mark difficulty: [JUNIOR] [MID] [SENIOR]
+
+Categories:
+- Web fundamentals (10 questions)
+- C# / .NET (10 questions)
+- Architecture & Design Patterns (10 questions)
+- Database & EF Core (10 questions)
+- Auth & Security (10 questions)
+- React & Frontend (10 questions)
+
+For each question provide:
+- The question in both English and Spanish
+- A concise answer (3-5 sentences)
+- A "trap" version of the question (how interviewers rephrase it to catch weak answers)
+
+---
+
+## SECTION 12: MENTAL MAPS (Mapas Mentales en ASCII)
+
+Create ASCII mental maps for:
+
+1. Clean Architecture layers and their contents
+2. JWT lifecycle (create → store → send → validate → refresh → expire)
+3. CQRS flow (Request → MediatR → Behavior → Handler → Repository → DB → DTO → Response)
+4. React component tree of this project
+5. CI/CD pipeline steps
+
+---
+
+## SECTION 13: FLASHCARD SET (Tarjetas de Estudio)
+
+Generate 40 flashcards in this format:
+
+Q: [Question in English] / [Pregunta en Español]
+A: [Answer in English] / [Respuesta en Español]
+---
+
+Topics: key terms, acronyms, definitions, "what is X used for?"
+
+---
+
+## SECTION 14: PRACTICE EXAM (Examen de Practica)
+
+Create a 30-question exam with:
+- 10 multiple choice (4 options each, one correct)
+- 10 true/false with brief justification
+- 10 short answer (2-3 sentence response expected)
+
+Provide answer key at the end.
+
+---
+
+## FORMAT INSTRUCTIONS
+
+- Use Markdown throughout (headers, code blocks, tables, bold)
+- Code examples in C# use ```csharp, TypeScript use ```typescript
+- ASCII diagrams use ``` code blocks
+- For bilingual content: use [EN] and [ES] labels
+- Keep definitions concise but complete
+- Assume the reader is a junior-to-mid developer targeting their first or second professional role
+- Tone: clear, direct, no filler phrases
+
+===========================================================================
+END OF PROMPT
+===========================================================================

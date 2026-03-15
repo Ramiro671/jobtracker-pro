@@ -13,13 +13,18 @@ A full-stack web application to track job applications, built with **ASP.NET Cor
 
 ## Features
 
-- ✅ **Track applications** — create, update status, delete job applications
-- ✅ **JWT authentication** — register, login, refresh tokens with rotation
+- ✅ **Track applications** — create, update status, edit details, delete job applications
+- ✅ **JWT authentication** — register, login, refresh tokens with rotation + auto-refresh interceptor
 - ✅ **Real-time stats** — total, active, and offer counts on dashboard
-- ✅ **Status filtering** — filter by any of 9 application stages
-- ✅ **Redis caching** — fast reads with cache-aside pattern
+- ✅ **Status filtering + search** — filter by any of 9 stages, search by title or company
+- ✅ **Stale warning banner** — amber alert for applications with 7+ days no activity
+- ✅ **Dark mode** — class-based toggle, persisted in localStorage
+- ✅ **CSV export** — download all applications as `.csv` with one click
+- ✅ **Change password** — `PUT /api/users/me/password` with current password verification
+- ✅ **Redis caching** — fast reads with cache-aside pattern (graceful fallback)
+- ✅ **Stale email notifications** — daily background service sends alerts for inactive apps
 - ✅ **Structured logging** — Serilog with rolling file output
-- ✅ **Full test coverage** — 16 tests (unit + integration)
+- ✅ **Full test coverage** — 22 tests (10 unit + 12 integration)
 - ✅ **Containerized** — Docker multi-stage build, Docker Compose stack
 - ✅ **CI/CD** — GitHub Actions pipeline with Azure + Netlify deploy
 
@@ -160,8 +165,10 @@ dotnet test
 |--------|----------|-------------|
 | `GET` | `/api/jobapplications/{userId}` | Get all applications |
 | `POST` | `/api/jobapplications` | Create application |
-| `PUT` | `/api/jobapplications/{id}` | Update status |
+| `PUT` | `/api/jobapplications/{id}` | Update status + notes |
+| `PATCH` | `/api/jobapplications/{id}` | Edit title / URL / notes |
 | `DELETE` | `/api/jobapplications/{id}` | Delete application |
+| `PUT` | `/api/users/me/password` | Change password |
 
 ### Application Status values
 
@@ -192,7 +199,7 @@ dotnet test tests/JobTrackerPro.UnitTests
 dotnet test tests/JobTrackerPro.IntegrationTests
 ```
 
-**16 tests total — 0 failures.**
+**22 tests total — 0 failures.** (10 unit + 12 integration)
 
 ---
 
@@ -221,7 +228,7 @@ JobTrackerPro.sln
 
 See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
-Current version: **v1.0.0** (March 11, 2026)
+Current version: **v1.1.0** (March 14, 2026)
 
 ---
 
