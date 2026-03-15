@@ -24,7 +24,7 @@ A full-stack web application to track job applications, built with **ASP.NET Cor
 - ✅ **Redis caching** — fast reads with cache-aside pattern (graceful fallback)
 - ✅ **Stale email notifications** — daily background service sends alerts for inactive apps
 - ✅ **Structured logging** — Serilog with rolling file output
-- ✅ **Full test coverage** — 22 tests (10 unit + 12 integration)
+- ✅ **Full test coverage** — 26 tests (10 unit + 16 integration)
 - ✅ **Containerized** — Docker multi-stage build, Docker Compose stack
 - ✅ **CI/CD** — GitHub Actions pipeline with Azure + Netlify deploy
 
@@ -199,7 +199,7 @@ dotnet test tests/JobTrackerPro.UnitTests
 dotnet test tests/JobTrackerPro.IntegrationTests
 ```
 
-**22 tests total — 0 failures.** (10 unit + 12 integration)
+**26 tests total — 0 failures.** (10 unit + 16 integration)
 
 ---
 

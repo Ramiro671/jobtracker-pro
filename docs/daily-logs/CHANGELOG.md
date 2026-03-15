@@ -65,11 +65,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - `JobApplicationDto` now includes `WorkModality`, `SeniorityLevel`, `Source`, `SalaryMin`, `SalaryMax`, `SalaryCurrency`
 - Dashboard: search bar, edit modal (PATCH), stale banner (amber alert, 7-day threshold), pagination (12 per page)
-- Integration tests expanded from 8 to 12 cases; unit tests from 8 to 10
+- Integration tests expanded from 8 to 16 cases (12 JobApplications + 4 Auth); unit tests from 8 to 10
 
 ### Security
 - Rate limiting added to `UsersController` (`[EnableRateLimiting("api")]`)
 - Change password verifies current password before hashing new one
+
+---
+
+## [1.1.1] - 2026-03-15
+
+### Fixed
+- **Integration tests: rate limiter** — `AddRateLimiter`/`UseRateLimiter` now skipped when `IsEnvironment("Testing")`. The "auth" fixed-window limiter (10 req/min) was rejecting requests after the 10th auth call in `WebApplicationFactory`, causing 8 of 16 tests to fail with empty-body 429 responses.
+- **`EditJobApplicationCommand.CompanyName` nullable** — changed from `string` to `string?`. ASP.NET Core model binding was returning 400 when the field was omitted in PATCH requests; the handler already guarded with `IsNullOrWhiteSpace`.
+
+### CI/CD
+- Opted into Node.js 24 for all GitHub Actions runners (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`) to silence deprecation warnings ahead of the June 2026 forced migration.
 
 ---
 
