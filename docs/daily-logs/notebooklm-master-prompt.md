@@ -422,16 +422,31 @@ When generating the English version, use proper technical English vocabulary:
 Include a VOCABULARY section at the end of each English FAQ listing 10 key technical terms
 from that session with their pronunciation guide.
 
-### EXECUTION ORDER — GENERATE ALL 8 SESSIONS NOW
-Do NOT wait for further instructions. Do NOT ask for confirmation between sessions.
-Generate ALL 8 sessions sequentially and completely in a single response, following this order:
+### EXECUTION — ONE SESSION AT A TIME
 
-  SESSION 1 → SESSION 2 → SESSION 3 → SESSION 4 → SESSION 5 → SESSION 6 → SESSION 7 → SESSION 8
+When I type: START SESSION N
+Generate that session completely before stopping. Follow this structure for every session:
 
-For each session:
-  1. Print the session title and goal
-  2. Generate every tool listed (Study Guide, Mind Map or Briefing Doc, FAQ, Audio script, Quiz/Exam)
-  3. Each tool must appear TWICE: 🇪🇸 ESPAÑOL first, then 🇺🇸 ENGLISH
-  4. Separate sessions with a clear divider: ══════════════════════════════════
+  STEP 1 — Print: "SESSION N — [title] | Goal: [goal]"
+  STEP 2 — Generate Tool 1 (Study Guide): 🇪🇸 full Spanish version, then 🇺🇸 full English version
+  STEP 3 — Generate Tool 2 (Mind Map or Briefing Doc): 🇪🇸 then 🇺🇸
+  STEP 4 — Generate Tool 3 (FAQ): 🇪🇸 then 🇺🇸 — end English version with VOCABULARY section
+  STEP 5 — Generate Tool 4 (Audio script or Quiz/Exam): 🇪🇸 then 🇺🇸
+  STEP 6 — Print: "SESSION N COMPLETE ✓ — Type START SESSION [N+1] to continue"
 
-Begin immediately with SESSION 1. Do not stop until SESSION 8 is complete.
+Do NOT summarize. Do NOT skip tools. Do NOT ask for confirmation mid-session.
+Generate each tool fully before moving to the next.
+
+SESSION COMMANDS:
+  START SESSION 1  →  Architecture & Domain Layer
+  START SESSION 2  →  Application Layer: CQRS, MediatR, Validation
+  START SESSION 3  →  Infrastructure: EF Core, JWT, Redis, BackgroundService
+  START SESSION 4  →  API Layer: Controllers, Middleware, Program.cs
+  START SESSION 5  →  Frontend: React 18 + TypeScript + Tailwind CSS
+  START SESSION 6  →  Testing: Unit + Integration (26 tests)
+  START SESSION 7  →  DevOps: CI/CD, Docker, Azure, GitHub Pages
+  START SESSION 8  →  Full Request Flow + Practice Feature + Interview Prep
+
+When I first send this file, reply ONLY with:
+"Ready. I have read all [N] sources and the full 8-session bilingual study plan.
+Type START SESSION 1 to begin."
