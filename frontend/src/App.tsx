@@ -10,7 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 export default function App() {
   return (
     <ThemeProvider>
-    <BrowserRouter>
+    <BrowserRouter basename="/jobtracker-pro">
       <ToastProvider>
         <AuthProvider>
           <Routes>
