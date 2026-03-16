@@ -428,4 +428,18 @@ When generating the English version, use proper technical English vocabulary:
 - "middleware pipeline" (not "middleware chain")
 Include a VOCABULARY section at the end of each English FAQ listing 10 key technical terms
 from that session with their pronunciation guide.
+
+### EXECUTION ORDER — GENERATE ALL 8 SESSIONS NOW
+Do NOT wait for further instructions. Do NOT ask for confirmation between sessions.
+Generate ALL 8 sessions sequentially and completely in a single response, following this order:
+
+  SESSION 1 → SESSION 2 → SESSION 3 → SESSION 4 → SESSION 5 → SESSION 6 → SESSION 7 → SESSION 8
+
+For each session:
+  1. Print the session title and goal
+  2. Generate every tool listed (Study Guide, Mind Map or Briefing Doc, FAQ, Audio script, Quiz/Exam)
+  3. Each tool must appear TWICE: 🇪🇸 ESPAÑOL first, then 🇺🇸 ENGLISH
+  4. Separate sessions with a clear divider: ══════════════════════════════════
+
+Begin immediately with SESSION 1. Do not stop until SESSION 8 is complete.
 ```
