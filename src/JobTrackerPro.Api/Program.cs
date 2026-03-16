@@ -35,7 +35,7 @@ try
             policy.WithOrigins(
                     "http://localhost:5173",
                     "http://localhost:5174",
-                    "https://gleaming-lollipop-3b4183.netlify.app")
+                    "https://ramiro671.github.io")
                   .AllowAnyHeader()
                   .AllowAnyMethod()));
 

@@ -99,7 +99,7 @@ public class StaleNotificationService : BackgroundService
                 <p>Hi {user.FullName},</p>
                 <p>The following job applications haven't had any activity in {StaleDays}+ days:</p>
                 <ul>{appLines}</ul>
-                <p>Consider following up or updating their status in <a href="https://gleaming-lollipop-3b4183.netlify.app">JobTracker Pro</a>.</p>
+                <p>Consider following up or updating their status in <a href="https://ramiro671.github.io/jobtracker-pro">JobTracker Pro</a>.</p>
                 <p style="color:#888;font-size:12px">You're receiving this because you have active applications tracked in JobTracker Pro.</p>
                 """;
 
