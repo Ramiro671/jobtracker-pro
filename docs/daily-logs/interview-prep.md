@@ -11,8 +11,8 @@ The backend is ASP.NET Core 10 with Clean Architecture and CQRS using MediatR.
 It uses PostgreSQL for persistence, Redis for caching, and JWT with refresh token rotation for authentication.
 The frontend is React with TypeScript and Tailwind CSS.
 I containerized it with Docker, set up a CI/CD pipeline with GitHub Actions,
-and deployed the API to Azure App Service and the frontend to Netlify.
-The project has 16 automated tests — unit tests with Moq and integration tests
+and deployed the API to Azure App Service and the frontend to GitHub Pages.
+The project has 26 automated tests — 10 unit tests with Moq and 16 integration tests
 with WebApplicationFactory. I built it in 3 weeks to demonstrate senior-level patterns."
 
 ---
@@ -138,7 +138,7 @@ Unit tests test a single class in isolation — dependencies are mocked with Moq
 They're fast (milliseconds) and test logic bugs.
 Integration tests test the full HTTP pipeline: real middleware, real routing,
 real EF Core (InMemory), real validation. They're slower but catch wiring bugs
-that unit tests miss. I have 8 of each — 16 total.
+that unit tests miss. I have 10 unit tests and 16 integration tests — 26 total.
 
 **Q12: How does WebApplicationFactory work?**
 WebApplicationFactory spins up the full ASP.NET Core application in memory
@@ -225,8 +225,8 @@ as GitHub Actions secrets, which are never logged or exposed in output."
 |--------|-------|
 | Layers | 4 (Domain, Application, Infrastructure, API) |
 | Endpoints | 7 (3 auth + 4 CRUD) |
-| Unit tests | 8 |
-| Integration tests | 8 |
+| Unit tests | 10 |
+| Integration tests | 16 |
 | Docker image size | 106 MB |
 | JWT expiry | 60 minutes |
 | Refresh token expiry | 7 days |

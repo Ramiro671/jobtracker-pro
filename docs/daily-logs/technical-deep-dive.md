@@ -1,7 +1,7 @@
 # JobTracker Pro — Technical Deep Dive
 ## Code, Infrastructure, Patterns & Architecture Reference
 
-> Full-stack application: ASP.NET Core 10 + React 18 + TypeScript + PostgreSQL + Redis + Azure + Netlify
+> Full-stack application: ASP.NET Core 10 + React 18 + TypeScript + PostgreSQL + Redis + Azure + GitHub Pages
 > Architecture: Clean Architecture + CQRS + MediatR + Repository + Unit of Work
 
 ---
@@ -760,7 +760,7 @@ builder.Services.AddRateLimiter(o =>
 builder.Services.AddCors(o => o.AddPolicy("Frontend", policy =>
     policy.WithOrigins(
         "http://localhost:5173",
-        "https://gleaming-lollipop-3b4183.netlify.app"
+        "https://ramiro671.github.io"
     ).AllowAnyHeader().AllowAnyMethod()));
 
 var app = builder.Build();
@@ -1388,7 +1388,7 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore --configuration Release
       - run: dotnet test --no-build --configuration Release --verbosity normal
-        # Runs: 10 unit tests + 12 integration tests = 22 total
+        # Runs: 10 unit tests + 16 integration tests = 26 total
 
   docker-build:
     needs: build-and-test         # ← only runs if tests pass
@@ -1424,13 +1424,11 @@ jobs:
       - run: cd frontend && npm run build
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}   # ← injected at build time
-      - uses: nwtgck/actions-netlify@v3
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          publish-dir: './frontend/dist'
-          production-deploy: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: './frontend/dist'
+          publish_branch: gh-pages
 ```
 
 ### Docker Multi-Stage Build

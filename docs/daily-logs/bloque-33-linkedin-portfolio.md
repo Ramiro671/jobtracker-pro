@@ -16,7 +16,7 @@ A full-stack job application tracker built with:
 → JWT auth with refresh token rotation
 → PostgreSQL + Redis (cache-aside pattern)
 → Serilog structured logging
-→ 16 automated tests (unit + integration)
+→ 26 automated tests (10 unit + 16 integration)
 
 **Frontend:**
 → React 18 + TypeScript + Tailwind CSS
@@ -26,7 +26,7 @@ A full-stack job application tracker built with:
 **DevOps:**
 → Docker multi-stage build (106MB image)
 → GitHub Actions CI/CD
-→ Azure App Service + Netlify
+→ Azure App Service + GitHub Pages
 
 The biggest technical challenge: keeping Clean Architecture boundaries strict.
 The Application layer cannot import Infrastructure — interfaces live in Application,
@@ -56,8 +56,8 @@ Full-stack job application tracker — ASP.NET Core 10 · Clean Architecture · 
 
 ![CI/CD](https://github.com/Ramiro671/jobtracker-pro/actions/workflows/ci.yml/badge.svg)
 
-**Stack:** .NET 10 · C# · PostgreSQL · Redis · JWT · React · TypeScript · Docker · Azure · Netlify
-**Tests:** 16 (unit + integration) · **Image:** 106MB multi-stage Docker build
+**Stack:** .NET 10 · C# · PostgreSQL · Redis · JWT · React · TypeScript · Docker · Azure · GitHub Pages
+**Tests:** 26 (10 unit + 16 integration) · **Image:** 106MB multi-stage Docker build
 ```
 
 ---
@@ -93,6 +93,6 @@ git push origin main --tags
 | Frontend | React 18, TypeScript, Tailwind CSS, Protected Routes |
 | Testing | 16 tests — unit + integration |
 | DevOps | Docker, Docker Compose, GitHub Actions CI/CD |
-| Deploy | Azure App Service + Netlify (config ready) |
+| Deploy | Azure App Service + GitHub Pages |
 | Docs | README, CHANGELOG, daily logs, interview prep |
 | Version | v1.0.0 tagged on GitHub |

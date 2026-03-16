@@ -95,7 +95,7 @@ This project follows **Clean Architecture** with strict dependency rules — dep
 | GitHub Actions | CI/CD pipeline |
 | Docker | Containerization |
 | Azure App Service | Backend hosting |
-| Netlify | Frontend hosting |
+| GitHub Pages | Frontend hosting |
 
 ---
 

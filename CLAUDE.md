@@ -12,7 +12,7 @@ A web app to track job applications through their full lifecycle (Saved → Appl
 - **Frontend:** React + TypeScript + Vite + Tailwind CSS
 - **Database:** PostgreSQL via Neon.tech (free tier, serverless)
 - **Auth:** JWT + Refresh Tokens
-- **Hosting:** Azure App Service (API) + Netlify (Frontend)
+- **Hosting:** Azure App Service (API) + GitHub Pages (Frontend)
 - **CI/CD:** GitHub Actions (`.github/workflows/ci.yml`)
 
 ---
@@ -119,8 +119,9 @@ tests/
 - Current prod URL: `https://jobtracker-api-prod-ehg6euckd4evaabw.centralus-01.azurewebsites.net`
 
 ### SPA routing
-- Netlify redirect rule is in `frontend/public/netlify.toml` (NOT `frontend/netlify.toml`).
-- Reason: Vite copies `public/` contents to `dist/` on build. The root `netlify.toml` is not reliably included by `nwtgck/actions-netlify@v3` which deploys `frontend/dist/` directly.
+- GitHub Pages SPA routing is handled by `frontend/public/404.html` — GitHub Pages serves it on unknown paths; it redirects to `index.html` with the path as a query string, which the app then restores.
+- `BrowserRouter` has `basename="/jobtracker-pro"` to match the GitHub Pages sub-path.
+- `vite.config.ts` has `base: '/jobtracker-pro/'` for correct asset paths.
 
 ---
 
@@ -131,7 +132,7 @@ Triggered on push/PR to `main`. Jobs in order:
 1. **build-and-test** — `dotnet build` + unit tests + integration tests
 2. **docker-build** — builds Docker image (no push, just validates)
 3. **deploy-api** — `dotnet publish` → Azure Web App (`azure/webapps-deploy@v3`)
-4. **deploy-frontend** — `npm ci && npm run build` → Netlify (`nwtgck/actions-netlify@v3`)
+4. **deploy-frontend** — `npm ci && npm run build` → GitHub Pages (`peaceiris/actions-gh-pages@v4`)
 
 ### Required GitHub Secrets
 
@@ -139,8 +140,7 @@ Triggered on push/PR to `main`. Jobs in order:
 |--------|----------|
 | `AZURE_APP_NAME` | Azure Web App name |
 | `AZURE_PUBLISH_PROFILE` | Azure deployment credentials |
-| `NETLIFY_AUTH_TOKEN` | Netlify deploy |
-| `NETLIFY_SITE_ID` | Netlify site identifier |
+| `GITHUB_TOKEN` | GitHub Pages deploy (built-in, no manual setup) |
 | `VITE_API_URL` | Frontend API URL injected at build time |
 
 ---
@@ -150,9 +150,9 @@ Triggered on push/PR to `main`. Jobs in order:
 Allowed origins in `Program.cs`:
 - `http://localhost:5173`
 - `http://localhost:5174`
-- `https://gleaming-lollipop-3b4183.netlify.app`
+- `https://ramiro671.github.io`
 
-When the Netlify domain changes, update Program.cs and redeploy.
+When the GitHub Pages domain changes, update Program.cs and redeploy.
 
 ---
 

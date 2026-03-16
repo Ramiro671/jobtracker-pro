@@ -20,7 +20,7 @@
 - **Backend:** ASP.NET Core 8 · C# · Clean Architecture · EF Core · PostgreSQL · JWT · Redis · Serilog
 - **Frontend:** React · TypeScript · Vite · Tailwind CSS · React Hook Form · React Router
 - **Testing:** xUnit · NUnit · Moq · FluentAssertions · WebApplicationFactory
-- **DevOps:** Docker · Docker Compose · GitHub Actions · Azure App Service · Netlify
+- **DevOps:** Docker · Docker Compose · GitHub Actions · Azure App Service · GitHub Pages
 - **Herramientas:** VS Code · C# Dev Kit · Claude Code v2.1.69 · Node.js v20.16 · Git
 
 ### Arquitectura: Clean Architecture
@@ -55,7 +55,7 @@ JobTrackerPro.sln
 | Fase 1 | 1-4 | 5 Mar–31 Mar | ASP.NET Core · EF Core · PostgreSQL · JWT · Clean Architecture |
 | Fase 2 | 5-7 | 1 Abr–21 Abr | xUnit · NUnit · Moq · Docker · Docker Compose · Redis |
 | Fase 3 | 8-11 | 22 Abr–19 May | React · TypeScript · Auth UI · Tailwind CSS |
-| Fase 4 | 12-15 | 20 May–16 Jun | GitHub Actions · Azure · Netlify · Application Insights |
+| Fase 4 | 12-15 | 20 May–16 Jun | GitHub Actions · Azure · GitHub Pages · Application Insights |
 | Fase 5 | 16-17 | 17 Jun–4 Jul | Documentación · Portfolio · Mock interviews en inglés |
 
 ### Bloques diarios completados

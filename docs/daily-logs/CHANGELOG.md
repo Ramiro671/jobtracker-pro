@@ -32,7 +32,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Protected routes with JWT context
 - GitHub Actions CI/CD pipeline (build → test → docker → deploy)
 - Azure App Service deployment configuration
-- Netlify frontend deployment with React Router redirect support
+- GitHub Pages frontend deployment with React Router redirect support (404.html redirect strategy)
 - Application Insights monitoring integration
 - 8 unit tests (xUnit + Moq + FluentAssertions)
 - 8 integration tests (WebApplicationFactory + EF Core InMemory)
@@ -81,6 +81,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### CI/CD
 - Opted into Node.js 24 for all GitHub Actions runners (`FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true`) to silence deprecation warnings ahead of the June 2026 forced migration.
+- Migrated frontend hosting from Netlify to GitHub Pages (`peaceiris/actions-gh-pages@v4`). New URL: `https://ramiro671.github.io/jobtracker-pro/`. CORS updated to allow `https://ramiro671.github.io`. `vite.config.ts` sets `base: '/jobtracker-pro/'`; `BrowserRouter` uses `basename="/jobtracker-pro"`. SPA routing handled by `frontend/public/404.html` redirect strategy.
 
 ---
 

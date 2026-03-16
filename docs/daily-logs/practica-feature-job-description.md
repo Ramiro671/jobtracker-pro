@@ -650,7 +650,7 @@ git merge feature → main
 1. build-and-test      ← verifica que todo compila y tests pasan
 2. docker-build        ← valida imagen Docker
 3. deploy-api          ← Azure App Service se actualiza en ~2 min
-4. deploy-frontend     ← Netlify se actualiza en ~1 min
+4. deploy-frontend     ← GitHub Pages se actualiza en ~1 min
 ```
 
 Puedes monitorear en:

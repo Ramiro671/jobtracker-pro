@@ -30,7 +30,7 @@ HTTP: Axios with interceptor for automatic JWT refresh + request queuing
 Routing: React Router v6 with ProtectedRoute
 Features: Dark mode, CSV export, pagination, search, status filter, stale banner
 
-DevOps: GitHub Actions CI/CD → Azure App Service (backend) + Netlify (frontend)
+DevOps: GitHub Actions CI/CD → Azure App Service (backend) + GitHub Pages (frontend)
 
 === WHAT TO INCLUDE IN THE GUIDE ===
 
@@ -179,7 +179,7 @@ Topics:
 - What is GitHub Actions (workflow, jobs, steps, triggers)
 - What is a Docker container and Dockerfile (vs virtual machine)
 - What is Azure App Service (PaaS vs IaaS vs SaaS)
-- What is Netlify and static hosting
+- What is GitHub Pages and static hosting
 - What are environment variables and secrets (why not commit them)
 - What is a deployment pipeline (build → test → deploy)
 - What is a health check endpoint

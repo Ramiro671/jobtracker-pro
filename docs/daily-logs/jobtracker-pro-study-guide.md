@@ -83,7 +83,7 @@ Client ← HTTP Response (200 OK + JSON body) ←
 **[ES]** El **cliente** (navegador, app móvil) inicia las peticiones. El **servidor** (ASP.NET Core + Kestrel) escucha, procesa la lógica de negocio, accede a la base de datos y retorna respuestas.
 
 **In JobTracker Pro:**
-- Client: React app on Netlify (gleaming-lollipop.netlify.app)
+- Client: React app on GitHub Pages (ramiro671.github.io/jobtracker-pro)
 - Server: ASP.NET Core 10 on Azure App Service
 
 ---
@@ -107,7 +107,7 @@ Client ← HTTP Response (200 OK + JSON body) ←
 app.UseCors(policy => policy
     .WithOrigins(
         "http://localhost:5173",
-        "https://gleaming-lollipop-3b4183.netlify.app"
+        "https://ramiro671.github.io"
     )
     .AllowAnyMethod()
     .AllowAnyHeader()
@@ -139,7 +139,7 @@ app.UseCors(policy => policy
 
 **[ES]** Una **SPA** carga un HTML y actualiza el DOM dinámicamente. La navegación es instantánea. Una **MPA** sirve un nuevo HTML desde el servidor en cada navegación.
 
-**In JobTracker Pro:** React SPA hosted on Netlify. Netlify redirects all routes to `index.html` (configured in `frontend/public/netlify.toml`).
+**In JobTracker Pro:** React SPA hosted on GitHub Pages. SPA routing is handled by `frontend/public/404.html` — GitHub Pages serves it on unknown paths, which redirects back to `index.html`. `BrowserRouter` uses `basename="/jobtracker-pro"`.
 
 ---
 
@@ -149,7 +149,7 @@ app.UseCors(policy => policy
 
 **[ES]** Una herramienta de construcción transforma código fuente (TypeScript, JSX) en assets optimizados para el navegador. Vite usa módulos ES nativos en desarrollo (HMR instantáneo) y Rollup para producción.
 
-**In JobTracker Pro:** `npm run build` → generates `frontend/dist/` → deployed to Netlify.
+**In JobTracker Pro:** `npm run build` → generates `frontend/dist/` → deployed to GitHub Pages.
 
 ---
 
@@ -1010,7 +1010,7 @@ GET /api/jobapplications?cursor=last-id&take=10
 4. deploy-frontend
    ├── npm ci
    ├── npm run build (injects VITE_API_URL from GitHub Secret)
-   └── nwtgck/actions-netlify@v3 → Netlify
+   └── peaceiris/actions-gh-pages@v4 → GitHub Pages
 ```
 
 ---
@@ -1040,14 +1040,14 @@ ENTRYPOINT ["dotnet", "JobTrackerPro.Api.dll"]
 
 ---
 
-## 9.3 Azure App Service vs Netlify
+## 9.3 Azure App Service vs GitHub Pages
 
-| | Azure App Service | Netlify |
-|--|------------------|---------|
+| | Azure App Service | GitHub Pages |
+|--|------------------|--------------|
 | Type | PaaS (Platform as a Service) | Static hosting + CDN |
 | Use in project | ASP.NET Core API (backend) | React SPA (frontend) |
 | Scaling | Vertical + Horizontal | Auto CDN |
-| Config | App Settings (env vars) | Environment Variables |
+| Config | App Settings (env vars) | GitHub Secrets (build-time) |
 
 ---
 
@@ -1940,17 +1940,17 @@ Developer pushes to main branch
   │  Azure      │  │   from GitHub Secret)     │
   │  webapps-   │  │                           │
   │  deploy@v3  │  │  nwtgck/actions-          │
-  │             │  │  netlify@v3               │
+  │             │  │  actions-gh-pages@v4      │
   │  ↓          │  │  deploys dist/            │
   │  Azure App  │  │                           │
   │  Service    │  │  ↓                        │
-  │  (Central   │  │  Netlify CDN              │
-  │   US)       │  │  gleaming-lollipop        │
+  │  (Central   │  │  GitHub Pages CDN         │
+  │   US)       │  │  ramiro671.github.io      │
   └─────────────┘  └─────────────────────────┘
 
   Required Secrets:
   AZURE_APP_NAME · AZURE_PUBLISH_PROFILE
-  NETLIFY_AUTH_TOKEN · NETLIFY_SITE_ID · VITE_API_URL
+  GITHUB_TOKEN (built-in) · VITE_API_URL
 ```
 
 ---
@@ -2360,9 +2360,9 @@ Developer pushes to main branch
 
 ---
 
-**30.** Explain why `netlify.toml` must be in `frontend/public/` instead of `frontend/` in the JobTracker Pro project.
+**30.** Explain how SPA routing works on GitHub Pages in the JobTracker Pro project.
 
-**Expected answer:** Vite copies everything in the `public/` directory into `dist/` during build. The `nwtgck/actions-netlify@v3` GitHub Action deploys `frontend/dist/` directly. If `netlify.toml` is in `frontend/` root, it's not included in the `dist/` output and Netlify doesn't receive the SPA redirect rule (`/*` → `/index.html`). This means direct URL navigation (e.g., `/dashboard`) returns 404 instead of loading the React app.
+**Expected answer:** GitHub Pages serves a `404.html` file when a path doesn't match a physical file. The project places a `404.html` in `frontend/public/` (Vite copies it to `dist/`) that captures the URL path, stores it in `sessionStorage`, and redirects to `index.html`. The React app then reads from `sessionStorage` on startup and restores the intended route. `BrowserRouter` is configured with `basename="/jobtracker-pro"` to match the GitHub Pages sub-path `https://ramiro671.github.io/jobtracker-pro/`.
 
 ---
 

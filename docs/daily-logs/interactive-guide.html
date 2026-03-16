@@ -270,9 +270,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <div class="tech-card" onclick="toggle(this)">
       <div class="tech-icon">🌍</div>
-      <div class="tech-name">Netlify</div>
+      <div class="tech-name">GitHub Pages</div>
       <div class="tech-type">Hosting - Frontend</div>
-      <div class="tech-desc">Hosting estatico para el frontend React. Deploy automatico desde GitHub. netlify.toml en /public/ maneja el redirect de SPA routing.</div>
+      <div class="tech-desc">Hosting estatico para el frontend React. Deploy automatico desde GitHub via peaceiris/actions-gh-pages@v4. 404.html en /public/ maneja el redirect de SPA routing.</div>
     </div>
     <div class="tech-card" onclick="toggle(this)">
       <div class="tech-icon">🔄</div>
@@ -900,12 +900,12 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
 
   <h3>CORS — Cross-Origin Resource Sharing</h3>
   <div class="info">
-    El navegador bloquea requests a dominios distintos por seguridad. CORS permite que el frontend en <code>gleaming-lollipop-3b4183.netlify.app</code> haga requests a <code>azurewebsites.net</code>. Sin esta configuracion: error en consola del browser.
+    El navegador bloquea requests a dominios distintos por seguridad. CORS permite que el frontend en <code>ramiro671.github.io</code> haga requests a <code>azurewebsites.net</code>. Sin esta configuracion: error en consola del browser.
   </div>
   <div class="code">policy.<span class="fn">WithOrigins</span>(
     <span class="st">"http://localhost:5173"</span>,
     <span class="st">"http://localhost:5174"</span>,
-    <span class="st">"https://gleaming-lollipop-3b4183.netlify.app"</span>
+    <span class="st">"https://ramiro671.github.io"</span>
 ).<span class="fn">AllowAnyHeader</span>().<span class="fn">AllowAnyMethod</span>();</div>
 
   <h3>Respuestas de error estandarizadas (RFC 9110)</h3>
@@ -1073,10 +1073,10 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
       <div class="pd">Azure App Service</div>
     </div>
     <div class="pipe-arr">→</div>
-    <div class="pstep" onclick="showPipe(this,'netlify')">
+    <div class="pstep" onclick="showPipe(this,'ghpages')">
       <div class="pi">🌍</div>
       <div class="pn">Deploy Frontend</div>
-      <div class="pd">Netlify</div>
+      <div class="pd">GitHub Pages</div>
     </div>
   </div>
   <div id="pipe-detail" class="card" style="display:none;margin-top:8px"></div>
@@ -1086,8 +1086,7 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
     <tr><th>Secret</th><th>Usado en</th><th>Descripcion</th></tr>
     <tr><td><span class="tag">AZURE_APP_NAME</span></td><td>deploy-api</td><td>Nombre del Web App en Azure</td></tr>
     <tr><td><span class="tag">AZURE_PUBLISH_PROFILE</span></td><td>deploy-api</td><td>Credenciales de despliegue Azure</td></tr>
-    <tr><td><span class="tag">NETLIFY_AUTH_TOKEN</span></td><td>deploy-frontend</td><td>Token personal de Netlify</td></tr>
-    <tr><td><span class="tag">NETLIFY_SITE_ID</span></td><td>deploy-frontend</td><td>ID del sitio en Netlify</td></tr>
+    <tr><td><span class="tag">GITHUB_TOKEN</span></td><td>deploy-frontend</td><td>Token integrado de GitHub (no requiere configuracion manual)</td></tr>
     <tr><td><span class="tag">VITE_API_URL</span></td><td>deploy-frontend</td><td>URL del backend → inyectada en build</td></tr>
   </table>
 
@@ -1101,7 +1100,7 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
   <span class="fn">build-and-test</span>:
     steps:
       - dotnet build --configuration Release
-      - dotnet test  <span class="cm"># 10 unit + 12 integration = 22 tests</span>
+      - dotnet test  <span class="cm"># 10 unit + 16 integration = 26 tests</span>
 
   <span class="fn">docker-build</span>:
     needs: build-and-test    <span class="cm"># no corre si los tests fallan</span>
@@ -1118,7 +1117,7 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
     needs: build-and-test
     steps:
       - npm ci &amp;&amp; npm run build
-      - nwtgck/actions-netlify@v3</div>
+      - peaceiris/actions-gh-pages@v4</div>
 
   <h3>Variables de entorno en Azure App Service</h3>
   <div class="info">
@@ -1140,7 +1139,7 @@ app.<span class="fn">MapControllers</span>();                 <span class="cm">/
 
   <hr>
   <div class="info ok">
-    <strong>El proyecto esta completo como MVP de produccion.</strong> Backend en Azure, frontend en Netlify, CI/CD automatico, auth JWT, CRUD completo, dark mode, CSV export, change password, stale notifications. Todo deployado y funcionando.
+    <strong>El proyecto esta completo como MVP de produccion.</strong> Backend en Azure, frontend en GitHub Pages, CI/CD automatico, auth JWT, CRUD completo, dark mode, CSV export, change password, stale notifications. Todo deployado y funcionando.
   </div>
 </div>
 
@@ -1284,10 +1283,10 @@ function resetFlow(){
 // Pipeline details
 const PIPE_INFO = {
   git: '<h4>git push origin main</h4><p>Disparador del pipeline. GitHub Actions detecta el push y comienza el workflow definido en .github/workflows/ci.yml</p>',
-  build: '<h4>Job: build-and-test</h4><p>1. <code>dotnet build --configuration Release</code> — compila los 4 proyectos</p><p>2. <code>dotnet test</code> — ejecuta 10 unit tests + 12 integration tests con InMemory DB</p><p>Si algun test falla, los jobs siguientes se cancelan (needs: build-and-test)</p>',
+  build: '<h4>Job: build-and-test</h4><p>1. <code>dotnet build --configuration Release</code> — compila los 4 proyectos</p><p>2. <code>dotnet test</code> — ejecuta 10 unit tests + 16 integration tests con InMemory DB</p><p>Si algun test falla, los jobs siguientes se cancelan (needs: build-and-test)</p>',
   docker: '<h4>Job: docker-build</h4><p><code>docker build . -t jobtrackerpro:latest</code></p><p>Valida que el Dockerfile sea correcto y que la imagen se construya. No hace push a ningun registry — solo verifica que el build funcione.</p>',
   azure: '<h4>Job: deploy-api</h4><p>1. <code>dotnet publish -c Release -o ./publish</code> — genera los binarios optimizados</p><p>2. <code>azure/webapps-deploy@v3</code> — sube los archivos al Azure App Service</p><p>La API queda disponible en: <code>jobtracker-api-prod-*.azurewebsites.net</code></p>',
-  netlify: '<h4>Job: deploy-frontend</h4><p>1. <code>npm ci</code> — instala dependencias exactas del package-lock.json</p><p>2. <code>npm run build</code> — Vite compila TypeScript + React → archivos estaticos en dist/</p><p>3. <code>nwtgck/actions-netlify@v3</code> — sube dist/ a Netlify</p><p>El sitio queda disponible en: <code>gleaming-lollipop-3b4183.netlify.app</code></p>',
+  ghpages: '<h4>Job: deploy-frontend</h4><p>1. <code>npm ci</code> — instala dependencias exactas del package-lock.json</p><p>2. <code>npm run build</code> — Vite compila TypeScript + React → archivos estaticos en dist/</p><p>3. <code>peaceiris/actions-gh-pages@v4</code> — sube dist/ a la rama gh-pages</p><p>El sitio queda disponible en: <code>ramiro671.github.io/jobtracker-pro/</code></p>',
 };
 
 function showPipe(el, id){

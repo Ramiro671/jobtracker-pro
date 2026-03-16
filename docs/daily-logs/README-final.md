@@ -26,7 +26,7 @@ A full-stack web application to track job applications, built with **ASP.NET Cor
 - ✅ **Structured logging** — Serilog with rolling file output
 - ✅ **Full test coverage** — 26 tests (10 unit + 16 integration)
 - ✅ **Containerized** — Docker multi-stage build, Docker Compose stack
-- ✅ **CI/CD** — GitHub Actions pipeline with Azure + Netlify deploy
+- ✅ **CI/CD** — GitHub Actions pipeline with Azure + GitHub Pages deploy
 
 ---
 
@@ -98,7 +98,7 @@ A full-stack web application to track job applications, built with **ASP.NET Cor
 | Docker + Compose | Containerization |
 | GitHub Actions | CI/CD pipeline |
 | Azure App Service | Backend hosting |
-| Netlify | Frontend hosting |
+| GitHub Pages | Frontend hosting |
 | Application Insights | Monitoring |
 
 ---
@@ -228,7 +228,7 @@ JobTrackerPro.sln
 
 See [CHANGELOG.md](CHANGELOG.md) for full release history.
 
-Current version: **v1.1.0** (March 14, 2026)
+Current version: **v1.1.1** (March 15, 2026)
 
 ---
 
